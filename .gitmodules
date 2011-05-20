@@ -1,0 +1,6 @@
+[submodule "obvious"]
+	path = obvious
+	url = git://git.mercenariesguild.net/obvious.git
+[submodule "freedesktop"]
+	path = freedesktop
+	url = git://github.com/terceiro/awesome-freedesktop.git

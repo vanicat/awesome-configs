@@ -1,0 +1,820 @@
+* Standard awesome library
+  :PROPERTIES:
+  :ID:       81fb6f0d-de79-4240-b522-db0248e875b4
+  :END:
+#+begin_src lua :tangle rc.lua
+  require("awful")
+  require("awful.autofocus")
+  require("awful.rules")
+  -- Theme handling library
+  require("beautiful")
+  -- Notification library
+  require("naughty")
+  require("wicked")
+  require("obvious.cpu")
+  require("obvious.mem")
+  require('freedesktop.utils')
+#+end_src lua
+* Variable definitions
+  :PROPERTIES:
+  :ID:       0add4973-4698-400c-9e45-ee19ebad07e5
+  :END:
+  Hostname for different configuration for different host
+#+begin_src lua :tangle rc.lua
+  function hostname()
+     local f = io.popen ("/bin/hostname")
+     local n = f:read("*a") or "none"
+     f:close()
+     n=string.gsub(n, "\n$", "")
+     return(n)
+  end
+
+  hostname = hostname()
+#+end_src lua
+
+** Themes define colours, icons, and wallpapers
+   :PROPERTIES:
+   :ID:       594f0af4-8ebb-4b57-b249-1011616e6b4f
+   :END:
+   The default is a dark theme
+#+begin_src lua :tangle rc.lua
+  theme_path = "/usr/share/awesome/themes/default/theme.lua"
+#+end_src lua
+  Uncommment this for a lighter theme
+  theme_path = "/usr/share/awesome/themes/sky/theme.lua"
+*** My actual theme
+    :PROPERTIES:
+    :ID:       84e0bbed-d3e5-4ca0-8145-4fd4fe669195
+    :END:
+#+begin_src lua :tangle rc.lua
+  theme_path = "/home/moi/.config/awesome/theme.lua"
+#+end_src lua
+*** Actually load theme
+    :PROPERTIES:
+    :ID:       81f2faf6-0b2d-4de5-bbed-f3f8eca27d7f
+    :END:
+#+begin_src lua :tangle rc.lua
+beautiful.init(theme_path)
+#+end_src lua
+** This is used later as the default terminal and editor to run.
+   :PROPERTIES:
+   :ID:       94c8aa3a-0b0d-4d3c-a173-50dd77fc2df4
+   :END:
+#+begin_src lua :tangle rc.lua
+  terminal = "x-terminal-emulator"
+  emacs = "myemacs-n"
+  if hostname == "corbeau" or hostname == "toubib"  then
+    filemanager = "nautilus"
+  else
+     filemanager = "thunar"
+  end
+  if hostname == "corbeau" or hostname == "toubib" then
+     webbrowser = "chromium-browser"
+  else
+     webbrowser = "iceweasel"
+  end
+  editor = emacs
+  editor_cmd = emacs
+#+end_src lua
+
+** Default modkey.
+   :PROPERTIES:
+   :ID:       fff9a651-8163-49b0-97f8-75f26931b480
+   :END:
+   Usually, Mod4 is the key with a logo between Control and Alt.
+   If you do not like this or do not have such a key,
+   I suggest you to remap Mod4 to another key using xmodmap or other tools.
+   However, you can use another modifier like Mod1, but it may interact with others.
+#+begin_src lua :tangle rc.lua
+modkey = "Mod4"
+#+end_src lua
+
+** Table of layouts to cover with awful.layout.inc, order matters.
+   :PROPERTIES:
+   :ID:       b4bb4192-c62e-4eec-afb6-5c7856082755
+   :END:
+#+begin_src lua :tangle rc.lua
+  layouts =
+  {
+      awful.layout.suit.tile,
+  --    awful.layout.suit.tile.left,
+      awful.layout.suit.tile.bottom,
+  --    awful.layout.suit.tile.top,
+      awful.layout.suit.fair,
+  --    awful.layout.suit.fair.horizontal,
+      awful.layout.suit.max,
+      awful.layout.suit.max.fullscreen,
+      awful.layout.suit.magnifier,
+      awful.layout.suit.floating
+  }
+#+end_src lua
+
+* Some useful function
+  :PROPERTIES:
+  :ID:       3453864d-2cd2-40f7-8569-ea43013cd6a7
+  :END:
+#+begin_src lua :tangle rc.lua
+  function give_info (c)
+     text = ""
+     if c.class then
+        text = text .. "Class: " .. c.class .. " "
+     end
+     if c.instance then
+        text = text .. "Instance: ".. c.instance .. " "
+     end
+     if c.role then
+        text = text .. "Role: ".. c.role
+     end
+     naughty.notify({text = text, title = "window info", timeout = 5, screen = mouse.screen, ontop = true})
+     io.stderr:write (text)
+     io.stderr:write "\n"
+  end
+
+  function Set (list)
+    local set = {}
+    for _, l in ipairs(list) do set[l] = true end
+    return set
+  end
+#+end_src lua
+
+* Tags
+** different default for different computer
+   :PROPERTIES:
+   :ID:       8ca834a0-bcb4-4414-b589-535e4a57c10b
+   :END:
+#+begin_src lua :tangle rc.lua
+  if hostname == "corbeau" then
+     term_layout = awful.layout.suit.tile
+     default_layout = awful.layout.suit.tile
+  else
+     term_layout = awful.layout.suit.max
+     default_layout = awful.layout.suit.max
+  end
+#+end_src lua
+** the tags definition
+   :PROPERTIES:
+   :ID:       03ecda20-4b77-4f0d-9c38-d66ae555400a
+   :END:
+#+begin_src lua :tangle rc.lua
+  tags_config = {
+     { name = "te", layout = term_layout, mfact = 0.5 },
+     { name = "em", layout = awful.layout.suit.max, mfact = 0.75 },
+     { name = "net", layout = awful.layout.suit.max, mfact = 0.75 },
+     { name = "pl", layout = default_layout, mfact = 0.5 },
+     { name = "fm", layout = default_layout, mfact = 0.5 },
+     { name = "pwd", layout = default_layout, mfact = 0.5 },
+     { name = "7", layout = default_layout, mfact = 0.5 },
+     { name = "wall", layout = default_layout, mfact = 0.5 },
+     { name = "vnc", layout = default_layout, mfact = 0.5 }
+  }
+#+end_src lua
+** Define a tag table which hold all screen tags.
+   :PROPERTIES:
+   :ID:       394828bc-8f64-4bae-bff7-70dfed85a0dc
+   :END:
+#+begin_src lua :tangle rc.lua
+  tags = {}
+  for s = 1, screen.count() do
+      -- Each screen has its own tag table.
+      tags[s] = awful.tag({ "tr", "em", "net", "pl", "fm", "pwd", 7, 8, 9 }, s, awful.layout.suit.max)
+      for i, t in ipairs(tags_config) do
+         awful.layout.set(t.layout, tags[s][i])
+         awful.tag.setmwfact(t.mfact,tags[s][i])
+      end
+
+   end
+#+end_src lua
+
+* Menu
+** Load Debian menu entries
+   :PROPERTIES:
+   :ID:       92fed7b5-5cf8-4b37-ae53-1bd23c14ea7a
+   :END:
+#+begin_src lua :tangle rc.lua
+  require("debian.menu")
+  require('freedesktop.menu')
+
+  freedesktop.menu.all_menu_dirs = { '/usr/share/applications/', '/usr/share/applications/kde4/' }
+#+end_src lua
+
+** Create a laucher widget and a main menu
+   :PROPERTIES:
+   :ID:       a8a3dd0d-34d7-4103-a3ab-6600877364cb
+   :END:
+#+begin_src lua :tangle rc.lua
+  myawesomemenu = {
+     { "manual", terminal .. " -e man awesome" },
+     { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
+     { "hibernate", function () awful.util.spawn("sudo /usr/sbin/pm-hibernate") end },
+     { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end },
+     { "restart", awesome.restart },
+     { "quit", awesome.quit }
+  }
+
+  mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                      { "open terminal", terminal },
+                                      { "open emacs", "emacs" },
+                                      { "open file manager", filemanager },
+                                      { "open webbrowser", webbrowser },
+                                      { "windows" , function () awful.menu.clients({ width=250 }) end},
+                                      { "Debian", debian.menu.Debian_menu.Debian },
+                                      { "App", freedesktop.menu.new() },
+                                   }
+                         })
+
+  mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+                                       menu = mymainmenu })
+#+end_src lua
+
+* Wibox
+** Create a textclock widget
+   :PROPERTIES:
+   :ID:       2eec7f78-ef1e-4246-8bd9-54e5950aeed4
+   :END:
+#+begin_src lua :tangle rc.lua
+  mytextclock = awful.widget.textclock({ align = "right" })
+#+end_src lua
+** Create a systray
+   :PROPERTIES:
+   :ID:       278469e7-4e34-41d9-b2ae-a9943bda17c3
+   :END:
+#+begin_src lua :tangle rc.lua
+  mysystray = widget({ type = "systray" })
+#+end_src lua
+** Create a cpuwidget
+   :PROPERTIES:
+   :ID:       481ba62a-1c6c-45d9-9e61-fea09a243dc3
+   :END:
+#+begin_src lua :tangle rc.lua
+  mycpu = obvious.cpu():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('red')
+  mymem = obvious.mem():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('blue')
+#+end_src lua
+** Create a widget for each screen.
+*** First define array for each type of widget
+    :PROPERTIES:
+    :ID:       c9647ba4-57dd-4006-80ac-1670be56fc3d
+    :END:
+#+begin_src lua :tangle rc.lua
+  mywibox = {}
+  mypromptbox = {}
+  mylayoutbox = {}
+#+end_src lua
+*** The array for the tag list and its buttons
+    :PROPERTIES:
+    :ID:       1e88a428-2aaf-4bc9-a46f-b9c7e2cf507f
+    :END:
+#+begin_src lua :tangle rc.lua
+  mytaglist = {}
+
+  mytaglist.buttons = awful.util.table.join(
+     awful.button({ }, 1, awful.tag.viewonly),
+     awful.button({ modkey }, 1, awful.client.movetotag),
+     awful.button({ }, 3, awful.tag.viewtoggle),
+     awful.button({ modkey }, 3, awful.client.toggletag),
+     awful.button({ }, 4, awful.tag.viewnext),
+     awful.button({ }, 5, awful.tag.viewprev)
+  )
+#+end_src lua
+*** The array for the task list and its buttons
+    :PROPERTIES:
+    :ID:       95782c2c-e9a7-4c8d-a969-f3f9d7591335
+    :END:
+#+begin_src lua :tangle rc.lua
+  mytasklist = {}
+  mytasklist.buttons = awful.util.table.join(
+     awful.button({ }, 1, function (c)
+                             if not c:isvisible() then
+                                awful.tag.viewonly(c:tags()[1])
+                             end
+                             client.focus = c
+                             c:raise()
+                          end),
+     awful.button({ }, 3, function (c)
+                             if c.maximized_horizontal then
+                                max_icon = beautiful.titlebar_maximized_button_focus_active
+                             else
+                                max_icon = beautiful.titlebar_maximized_button_focus_inactive
+                             end
+                             if awful.client.floating.get(c) then
+                                float_icon = beautiful.titlebar_floating_button_focus_active
+                             else
+                                float_icon = beautiful.titlebar_floating_button_focus_inactive
+                             end
+                             if c.sticky then
+                                sticky_icon = beautiful.titlebar_sticky_button_focus_active
+                             else
+                                sticky_icon = beautiful.titlebar_sticky_button_focus_inactive
+                             end
+                             if instance and instance.items[1] and instance.items[1].wibox.screen then
+                                instance:hide()
+                                instance = nil
+                             else
+                                instance = awful.menu.new({ items =
+                                                            { { "close", function () c:kill() end, beautiful.titlebar_close_button_focus },
+                                                              { "maximize", function ()
+                                                                               c.maximized_horizontal = not c.maximized_horizontal
+                                                                               c.maximized_vertical = not c.maximized_vertical
+                                                                            end, max_icon },
+                                                              { "float", function ()
+                                                                            awful.client.floating.toggle(c)
+                                                                         end, float_icon },
+                                                              { "sticky", function ()
+                                                                             c.sticky=not c.sticky
+                                                                          end, sticky_icon },
+                                                              { "info", function () give_info(c) end, nil },
+                                                              { "raise", function () c:raise() end, nil },
+                                                              { "focus", function () awful.client.focus.byidx(0, c) end, nil }}})
+                                instance:show()
+                             end
+                          end),
+     awful.button({ modkey }, 3, function ()
+                                    if instance then
+                                       instance:hide()
+                                       instance = nil
+                                    else
+                                       instance = awful.menu.clients({ width=250 })
+                                    end
+                                 end),
+     awful.button({ }, 4, function ()
+                             awful.client.focus.byidx(1)
+                             if client.focus then client.focus:raise() end
+                          end),
+     awful.button({ }, 5, function ()
+                             awful.client.focus.byidx(-1)
+                             if client.focus then client.focus:raise() end
+                          end))
+#+end_src lua
+
+*** No realy create those widget
+    :PROPERTIES:
+    :ID:       60619c2f-2fb6-40eb-8d75-e93987ff0659
+    :END:
+#+begin_src lua :tangle rc.lua
+  for s = 1, screen.count() do
+#+end_src lua
+**** Create a promptbox for each screen
+     :PROPERTIES:
+     :ID:       3207851b-72eb-405f-a428-f77e65a39309
+     :END:
+#+begin_src lua :tangle rc.lua
+  mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
+#+end_src lua
+**** Create an imagebox widget which will contains an icon indicating which layout we're using.
+     :PROPERTIES:
+     :ID:       0922f763-87ba-4828-a84f-618fbcf6e82d
+     :END:
+     We need one layoutbox per screen.
+#+begin_src lua :tangle rc.lua
+  mylayoutbox[s] = awful.widget.layoutbox(s)
+  mylayoutbox[s]:buttons(awful.util.table.join(
+                            awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
+                            awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
+                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
+                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
+#+end_src lua
+**** Create a taglist widget
+     :PROPERTIES:
+     :ID:       b5a9a845-0b1a-4071-83db-238373844a9b
+     :END:
+#+begin_src lua :tangle rc.lua
+  mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
+#+end_src lua
+**** Create a tasklist widget
+     :PROPERTIES:
+     :ID:       9117788c-46cc-4937-b413-b5a6413e29a3
+     :END:
+#+begin_src lua :tangle rc.lua
+  mytasklist[s] = awful.widget.tasklist(function(c)
+                                           return awful.widget.tasklist.label.currenttags(c, s)
+                                        end, mytasklist.buttons)
+#+end_src lua
+**** Create the wibox
+     :PROPERTIES:
+     :ID:       0ca60283-8031-44fc-bcfc-92c8e2e96b48
+     :END:
+#+begin_src lua :tangle rc.lua
+  mywibox[s] = awful.wibox({ position = "top", screen = s })
+#+end_src lua
+**** Add widgets to the wibox - order matters
+     :PROPERTIES:
+     :ID:       fad85da4-1e99-42fa-bc7d-ffdc56f7f78a
+     :END:
+#+begin_src lua :tangle rc.lua
+  mywibox[s].widgets = {
+     {
+        mylauncher,
+        mytaglist[s],
+        mypromptbox[s],
+        layout = awful.widget.layout.horizontal.leftright
+     },
+     mylayoutbox[s],
+     mytextclock,
+     mycpu,
+     mymem,
+     s == 1 and mysystray or nil,
+     mytasklist[s],
+     layout = awful.widget.layout.horizontal.rightleft
+  }
+#+end_src lua
+#+begin_src lua :tangle rc.lua
+  end
+#+end_src lua
+
+* Mouse bindings
+  :PROPERTIES:
+  :ID:       baa0fc54-9874-40b1-a4a2-d437b0127cc1
+  :END:
+#+begin_src lua :tangle rc.lua
+  root.buttons(awful.util.table.join(
+      awful.button({ }, 3, function () mymainmenu:toggle() end),
+      awful.button({ }, 4, awful.tag.viewnext),
+      awful.button({ }, 5, awful.tag.viewprev)
+  ))
+#+end_src lua
+
+* Key bindings
+** first a usefull function to create function to spawn command
+   :PROPERTIES:
+   :ID:       c1ae88a4-4691-41b3-a29d-05e8e14ed15d
+   :END:
+#+begin_src lua :tangle rc.lua
+  function keyspawn (cmd)
+     return function ()
+               awful.util.spawn(cmd)
+            end
+  end
+#+end_src lua
+
+** the global keys
+   :PROPERTIES:
+   :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
+   :END:
+#+begin_src lua :tangle rc.lua
+  globalkeys = awful.util.table.join(
+#+end_src lua
+*** The multimedia keys
+    :PROPERTIES:
+    :ID:       eb367b4a-5792-492b-b310-13ca003fa119
+    :END:
+    Do not forget to tell gnome to fuck off, and to let us play with them
+#+begin_src lua :tangle rc.lua
+  awful.key({}, "XF86AudioPlay",        keyspawn("nyxmms2 toggle")),
+  awful.key({}, "XF86AudioStop",        keyspawn("nyxmms2 stop")),
+  awful.key({}, "XF86AudioPrev",        keyspawn("nyxmms2 prev")),
+  awful.key({}, "XF86AudioNext",        keyspawn("nyxmms2 next")),
+  awful.key({}, "XF86AudioRaiseVolume", keyspawn("amixer set Master PLayback '2%+'")),
+  awful.key({}, "XF86AudioLowerVolume", keyspawn("amixer set Master PLayback '2%-'")),
+  awful.key({}, "XF86AudioMute",        keyspawn("amixer set Master toggle")),
+  awful.key({}, "XF86AudioMedia",       keyspawn("xbmc")),
+  awful.key({}, "XF86Music",            keyspawn("miro")),
+  awful.key({}, "XF86Tools",            keyspawn("gnome-volume-control.pulse")),
+  awful.key({}, "XF86Sleep",            keyspawn("sudo pm-hibernate")),
+  awful.key({}, "XF86HomePage",		keyspawn(webbrowser)),
+  awful.key({}, "XF86Mail",		keyspawn(emacs)),
+#+end_src lua
+*** Moving trough the tags
+    :PROPERTIES:
+    :ID:       680522fc-7ef2-4cff-8239-1452059f9e6c
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
+  awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
+  awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
+#+end_src lua
+*** Changing focus
+    :PROPERTIES:
+    :ID:       5560214d-8006-4ef7-8595-3b828971aae2
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey,           }, "j",
+      function ()
+          awful.client.focus.byidx( 1)
+          if client.focus then client.focus:raise() end
+      end),
+  awful.key({ modkey,           }, "k",
+      function ()
+          awful.client.focus.byidx(-1)
+          if client.focus then client.focus:raise() end
+      end),
+  awful.key({ modkey,           }, "s",
+      function ()
+          awful.client.focus.byidx( 1)
+          if client.focus then client.focus:raise() end
+      end),
+  awful.key({ modkey,           }, "t",
+      function ()
+          awful.client.focus.byidx(-1)
+          if client.focus then client.focus:raise() end
+      end),
+
+  awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+  awful.key({ modkey,           }, "Tab",
+      function ()
+          awful.client.focus.history.previous()
+          if client.focus then
+              client.focus:raise()
+          end
+      end),
+  awful.key({ modkey,           }, ",", function ()
+                                           awful.menu.clients({}, { width = 250, keygrabber = true })
+                                        end),
+#+end_src lua
+*** Show the main menu
+    :PROPERTIES:
+    :ID:       f2c83894-b731-445f-adb0-9d761da7bd0d
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey,           }, "w", function () mymainmenu:toggle()        end),
+#+end_src lua
+*** Layout manipulation
+    :PROPERTIES:
+    :ID:       881fb246-96c2-44a0-94b0-962682161742
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
+  awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
+  awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+  awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+
+  awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
+  awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
+  awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
+  awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
+  awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
+  awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
+  awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
+  awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
+#+end_src lua
+*** Standard program
+    :PROPERTIES:
+    :ID:       1300c9c7-81a2-44a5-b098-d691e6c6dcc3
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey, "Control" }, "Return", function () awful.util.spawn(terminal) end),
+  awful.key({ modkey, "Control" }, "e", function () awful.util.spawn(emacs) end),
+  awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(filemanager) end),
+  awful.key({ modkey, "Control" }, "f", function () awful.util.spawn(webbrowser) end),
+#+end_src lua
+*** Meta
+    :PROPERTIES:
+    :ID:       44843d7a-9603-4a1f-972b-9956496a4c34
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey, "Control" }, "r", awesome.restart),
+  awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+#+end_src lua
+*** Prompt
+    :PROPERTIES:
+    :ID:       f381c18f-333a-4bf3-b2c1-bacf05c70c86
+    :END:
+#+begin_src lua :tangle rc.lua
+  awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+
+  awful.key({ modkey }, "x",
+            function ()
+               awful.prompt.run({ prompt = "Run Lua code: " },
+                                mypromptbox[mouse.screen].widget,
+                                awful.util.eval, nil,
+                                awful.util.getdir("cache") .. "/history_eval")
+            end)
+#+end_src lua
+*** Closing the keys
+    :PROPERTIES:
+    :ID:       1b2e42e8-fa97-48c1-88ad-6e94e6599f68
+    :END:
+#+begin_src lua :tangle rc.lua
+  )
+#+end_src lua
+** the client keys
+   :PROPERTIES:
+   :ID:       56679e1e-96dd-4368-90d4-7511f5f51067
+   :END:
+#+begin_src lua :tangle rc.lua
+  clientkeys = awful.util.table.join(
+      awful.key({ modkey, "Ctrl"    }, "i",      give_info),
+      awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+      awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
+      awful.key({ modkey, "Control" }, "c",      function (c) c:kill()                         end),
+      awful.key({ modkey, "Control" }, "w",      function (c) c:kill()                         end),
+      awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
+      awful.key({ modkey,           }, "Return", function (c) c:swap(awful.client.getmaster()) end),
+      awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
+      awful.key({ modkey, "Shift"   }, "r",      function (c) c:redraw()                       end),
+      awful.key({ modkey,           }, "n",      function (c) c.minimized = not c.minimized    end),
+      awful.key({ modkey,           }, "m",
+          function (c)
+              c.maximized_horizontal = not c.maximized_horizontal
+              c.maximized_vertical   = not c.maximized_vertical
+          end)
+  )
+#+end_src lua
+
+** tags specific keys
+*** Compute the maximum number of digit we need, limited to 9
+    :PROPERTIES:
+    :ID:       b75d045a-5853-4b29-90ed-ca181c5ae812
+    :END:
+#+begin_src lua :tangle rc.lua
+  keynumber = 0
+  for s = 1, screen.count() do
+     keynumber = math.min(9, math.max(#tags[s], keynumber));
+  end
+#+end_src lua
+
+*** Bind all key numbers to tags.
+    :PROPERTIES:
+    :ID:       5f913e14-6688-46f0-bbc8-bccae0bab2b6
+    :END:
+    Be careful: we use keycodes to make it works on any keyboard layout.
+    This should map on the top row of your keyboard, usually 1 to 9.
+#+begin_src lua :tangle rc.lua
+  for i = 1, keynumber do
+      globalkeys = awful.util.table.join(globalkeys,
+          awful.key({ modkey }, "#" .. i + 9,
+                    function ()
+                          local screen = mouse.screen
+                          if tags[screen][i] then
+                              awful.tag.viewonly(tags[screen][i])
+                          end
+                    end),
+          awful.key({ modkey, "Control" }, "#" .. i + 9,
+                    function ()
+                        local screen = mouse.screen
+                        if tags[screen][i] then
+                            awful.tag.viewtoggle(tags[screen][i])
+                        end
+                    end),
+          awful.key({ modkey, "Shift" }, "#" .. i + 9,
+                    function ()
+                        if client.focus and tags[client.focus.screen][i] then
+                            awful.client.movetotag(tags[client.focus.screen][i])
+                        end
+                    end),
+          awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
+                    function ()
+                        if client.focus and tags[client.focus.screen][i] then
+                            awful.client.toggletag(tags[client.focus.screen][i])
+                        end
+                    end))
+  end
+#+end_src lua
+
+** mousse button for clients
+   :PROPERTIES:
+   :ID:       bf6e8518-7b8a-4d45-9faf-dda7ea860819
+   :END:
+#+begin_src lua :tangle rc.lua
+  clientbuttons = awful.util.table.join(
+      awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
+      awful.button({ modkey }, 1, awful.mouse.client.move),
+      awful.button({ modkey }, 3, awful.mouse.client.resize))
+#+end_src lua
+
+** Set keys
+   :PROPERTIES:
+   :ID:       c04c1e56-f3db-40a8-831e-9207b81366df
+   :END:
+#+begin_src lua :tangle rc.lua
+  root.keys(globalkeys)
+#+end_src lua
+
+* Rules
+  :PROPERTIES:
+  :ID:       37b2ee4a-691f-4385-9e37-c8c0d220c3b8
+  :END:
+#+begin_src lua :tangle rc.lua
+  awful.rules.rules = {
+      -- All clients will match this rule.
+      { rule = { },
+        properties = { border_width = beautiful.border_width,
+                       border_color = beautiful.border_normal,
+                       focus = true,
+                       keys = clientkeys,
+                       buttons = clientbuttons } },
+      { rule = { class = "Chromium-browser" },
+        properties = { tag = tags[1][3] } },
+      { rule = { class = "Chromium" },
+        properties = { tag = tags[1][3] } },
+      { rule = { class = "MPlayer" },
+        properties = { floating = true } },
+      { rule = { class = "pinentry" },
+        properties = { floating = true } },
+      { rule = { class = "gimp" },
+        properties = { floating = true } },
+      { rule = { class = "Iceweasel" },
+        properties = { tag = tags[1][3] } },
+      { rule = { class = "X-www-browser" },
+        properties = { tag = tags[1][3] } },
+      { rule = { class = "Emacs" },
+        properties = { tag = tags[1][2] } },
+      { rule = { class = "Miro.real"},
+        properties = { tag = tags[1][4] } },
+      { rule = { class = "Keepassx"},
+        properties = { tag = tags[1][6] } },
+      { rule = { instance = "gajim.py" },
+        properties = { tag = tags[1][3] } },
+      { rule = { class = "Transmission" },
+        properties = { tag = tags[1][9] } },
+      { rule = { instance = "xmms-gtk-rater" },
+        properties = { tag = tags[1][4] } },
+      { rule = { instance = "cairo-dock" },
+        properties = { ontop = true } },
+      { rule = { instance = "abraca" },
+        properties = { tag = tags[1][4] } },
+  }
+#+end_src lua
+* Signals
+** Signal function to execute when a new client appears.
+   :PROPERTIES:
+   :ID:       783918c3-b1ea-4da8-9e81-2f91e0c3dc7a
+   :END:
+#+begin_src lua :tangle rc.lua
+  client.add_signal("manage",
+                    function (c, startup)
+                       -- Add a titlebar
+                       -- awful.titlebar.add(c, { modkey = modkey })
+
+                       -- Enable sloppy focus
+                       c:add_signal("mouse::enter", function(c)
+                                                       if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+                                                       and awful.client.focus.filter(c) then
+                                                       client.focus = c
+                                                    end
+                                                 end)
+                    end)
+
+  client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+  client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+#+end_src lua
+
+* autostart
+  :PROPERTIES:
+  :ID:       1207a2ce-cdc8-4f57-b2e5-6f60f0a581cd
+  :END:
+#+begin_src lua :tangle rc.lua
+  -- awful.util.spawn("/usr/bin/nm-applet")
+
+  autostart = {
+     { exec = "/usr/bin/gnome-settings-daemon" },
+     { exec = "/usr/lib/at-spi/at-spi-registryd" },
+     { exec = "/usr/bin/pidgin",
+       hosts = Set { "corbeau" }, },
+     { exec = "/usr/lib/iceweasel/firefox-bin", startas = "/usr/bin/iceweasel",
+       hosts = Set { "maison", "acer" } },
+     { exec = "/usr/lib/chromium-browser/chromium-browser", startas = "/usr/bin/chromium-browser",
+       hosts = Set { "corbeau", "toubib" } },
+     { exec = "/usr/bin/orage" },
+     { exec = "/usr/bin/wmname", args = "compiz" },
+     { exec = "/usr/bin/xscreensaver", args = "-no-splash",
+       hosts = Set { "corbeau", "acer" } },
+     { exec = "/usr/bin/gnome-power-manager",
+       hosts = Set { "acer" } },
+     { name = "wicd-client", startas = "/usr/bin/wicd-client",
+       hosts = Set { "acer" } },
+     { exec = "/usr/bin/xmms2d", startas = "/usr/bin/xmms2-launcher",
+       hosts = Set { "toubib" } },
+     { exec = "/usr/bin/abraca",
+       hosts = Set { "toubib", "corbeau" } },
+     { exec = "/home/moi/bin/xmms-gtk-rater",
+       hosts = Set { "toubib", "corbeau" } },
+     { exec = "/usr/bin/miro",
+       hosts = Set { "maison", "toubib" } },
+     { name = "podcast-reader", startas = "/home/moi/bin/podcast-reader",
+       hosts = Set { "toubib" } },
+     { exec = "/usr/bin/xcompmgr",
+       hosts = Set { "corbeau", } },
+     { exec = "/usr/bin/cairo-dock", args = "-c",
+       hosts = Set { "corbeau", } },
+     { exec = "/usr/bin/nautilus", args = "-n",
+       hosts = Set { "corbeau", } },
+     { exec = "/usr/bin/transmission",
+       hosts = Set { "toubib" } },
+  }
+
+  function mylauch(prgm)
+     if not (prgm.hosts) or prgm.hosts[hostname] then
+        cmd="start-stop-daemon --start --oknodo --background"
+        if prgm.exec then
+           cmd = cmd .. " --exec " .. prgm.exec
+        end
+        if prgm.name then
+           cmd = cmd .. " --name " .. prgm.name
+        end
+        if prgm.startas then
+           cmd = cmd .. " --startas " .. prgm.startas
+        end
+        if prgm.args then
+           cmd = cmd .. " -- " .. prgm.args
+        end
+        awful.util.spawn(cmd)
+        io.stderr:write('command: ')
+        io.stderr:write(cmd)
+        io.stderr:write('\n')
+     end
+  end
+
+
+  for i, prgm in ipairs(autostart) do
+     mylauch(prgm)
+  end
+#+end_src lua
