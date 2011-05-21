@@ -1,0 +1,11 @@
+#+TITLE: Vanicat's awesome config.
+
+My own awesome config.
+
+If you want to use this you will need Emacs's [[http://orgmode.org/][org-mode]]. A relatively
+recent version will be needed.
+
+You should change ORG_PATH in the Makefile to tell him where org-mode
+is.
+
+
