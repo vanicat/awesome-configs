@@ -2,7 +2,7 @@
   :PROPERTIES:
   :ID:       81fb6f0d-de79-4240-b522-db0248e875b4
   :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   require("awful")
   require("awful.autofocus")
   require("awful.rules")
@@ -20,7 +20,7 @@
   :ID:       0add4973-4698-400c-9e45-ee19ebad07e5
   :END:
   Hostname for different configuration for different host
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   function hostname()
      local f = io.popen ("/bin/hostname")
      local n = f:read("*a") or "none"
@@ -37,7 +37,7 @@
    :ID:       594f0af4-8ebb-4b57-b249-1011616e6b4f
    :END:
    The default is a dark theme
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   theme_path = "/usr/share/awesome/themes/default/theme.lua"
 #+end_src lua
   Uncommment this for a lighter theme
@@ -46,21 +46,21 @@
     :PROPERTIES:
     :ID:       84e0bbed-d3e5-4ca0-8145-4fd4fe669195
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   theme_path = "/home/moi/.config/awesome/theme.lua"
 #+end_src lua
 *** Actually load theme
     :PROPERTIES:
     :ID:       81f2faf6-0b2d-4de5-bbed-f3f8eca27d7f
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
 beautiful.init(theme_path)
 #+end_src lua
 ** This is used later as the default terminal and editor to run.
    :PROPERTIES:
    :ID:       94c8aa3a-0b0d-4d3c-a173-50dd77fc2df4
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   terminal = "x-terminal-emulator"
   emacs = "myemacs-n"
   if hostname == "corbeau" or hostname == "toubib"  then
@@ -85,7 +85,7 @@ beautiful.init(theme_path)
    If you do not like this or do not have such a key,
    I suggest you to remap Mod4 to another key using xmodmap or other tools.
    However, you can use another modifier like Mod1, but it may interact with others.
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
 modkey = "Mod4"
 #+end_src lua
 
@@ -93,7 +93,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       b4bb4192-c62e-4eec-afb6-5c7856082755
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   layouts =
   {
       awful.layout.suit.tile,
@@ -113,7 +113,7 @@ modkey = "Mod4"
   :PROPERTIES:
   :ID:       3453864d-2cd2-40f7-8569-ea43013cd6a7
   :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   function give_info (c)
      text = ""
      if c.class then
@@ -142,7 +142,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       8ca834a0-bcb4-4414-b589-535e4a57c10b
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   if hostname == "corbeau" then
      term_layout = awful.layout.suit.tile
      default_layout = awful.layout.suit.tile
@@ -155,28 +155,26 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       03ecda20-4b77-4f0d-9c38-d66ae555400a
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   tags_config = {
      { name = "te", layout = term_layout, mfact = 0.5 },
      { name = "em", layout = awful.layout.suit.max, mfact = 0.75 },
      { name = "net", layout = awful.layout.suit.max, mfact = 0.75 },
      { name = "pl", layout = default_layout, mfact = 0.5 },
      { name = "fm", layout = default_layout, mfact = 0.5 },
-     { name = "pwd", layout = default_layout, mfact = 0.5 },
+     { name = "IM", layout = default_layout, mfact = 0.5 },
      { name = "7", layout = default_layout, mfact = 0.5 },
-     { name = "wall", layout = default_layout, mfact = 0.5 },
-     { name = "vnc", layout = default_layout, mfact = 0.5 }
   }
 #+end_src lua
 ** Define a tag table which hold all screen tags.
    :PROPERTIES:
    :ID:       394828bc-8f64-4bae-bff7-70dfed85a0dc
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   tags = {}
   for s = 1, screen.count() do
       -- Each screen has its own tag table.
-      tags[s] = awful.tag({ "tr", "em", "net", "pl", "fm", "pwd", 7, 8, 9 }, s, awful.layout.suit.max)
+      tags[s] = awful.tag({ "tr", "em", "net", "pl", "fm", "IM", 7, 8, 9 }, s, awful.layout.suit.max)
       for i, t in ipairs(tags_config) do
          awful.layout.set(t.layout, tags[s][i])
          awful.tag.setmwfact(t.mfact,tags[s][i])
@@ -190,7 +188,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       92fed7b5-5cf8-4b37-ae53-1bd23c14ea7a
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   require("debian.menu")
   require('freedesktop.menu')
 
@@ -201,10 +199,10 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       a8a3dd0d-34d7-4103-a3ab-6600877364cb
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   myawesomemenu = {
      { "manual", terminal .. " -e man awesome" },
-     { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
+     { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
      { "hibernate", function () awful.util.spawn("sudo /usr/sbin/pm-hibernate") end },
      { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end },
      { "restart", awesome.restart },
@@ -231,21 +229,21 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       2eec7f78-ef1e-4246-8bd9-54e5950aeed4
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mytextclock = awful.widget.textclock({ align = "right" })
 #+end_src lua
 ** Create a systray
    :PROPERTIES:
    :ID:       278469e7-4e34-41d9-b2ae-a9943bda17c3
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mysystray = widget({ type = "systray" })
 #+end_src lua
 ** Create a cpuwidget
    :PROPERTIES:
    :ID:       481ba62a-1c6c-45d9-9e61-fea09a243dc3
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mycpu = obvious.cpu():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('red')
   mymem = obvious.mem():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('blue')
 #+end_src lua
@@ -254,7 +252,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       c9647ba4-57dd-4006-80ac-1670be56fc3d
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mywibox = {}
   mypromptbox = {}
   mylayoutbox = {}
@@ -263,7 +261,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       1e88a428-2aaf-4bc9-a46f-b9c7e2cf507f
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mytaglist = {}
 
   mytaglist.buttons = awful.util.table.join(
@@ -279,7 +277,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       95782c2c-e9a7-4c8d-a969-f3f9d7591335
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mytasklist = {}
   mytasklist.buttons = awful.util.table.join(
      awful.button({ }, 1, function (c)
@@ -349,14 +347,14 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       60619c2f-2fb6-40eb-8d75-e93987ff0659
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   for s = 1, screen.count() do
 #+end_src lua
 **** Create a promptbox for each screen
      :PROPERTIES:
      :ID:       3207851b-72eb-405f-a428-f77e65a39309
      :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
 #+end_src lua
 **** Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -364,7 +362,7 @@ modkey = "Mod4"
      :ID:       0922f763-87ba-4828-a84f-618fbcf6e82d
      :END:
      We need one layoutbox per screen.
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mylayoutbox[s] = awful.widget.layoutbox(s)
   mylayoutbox[s]:buttons(awful.util.table.join(
                             awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
@@ -376,14 +374,14 @@ modkey = "Mod4"
      :PROPERTIES:
      :ID:       b5a9a845-0b1a-4071-83db-238373844a9b
      :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
 #+end_src lua
 **** Create a tasklist widget
      :PROPERTIES:
      :ID:       9117788c-46cc-4937-b413-b5a6413e29a3
      :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mytasklist[s] = awful.widget.tasklist(function(c)
                                            return awful.widget.tasklist.label.currenttags(c, s)
                                         end, mytasklist.buttons)
@@ -392,14 +390,14 @@ modkey = "Mod4"
      :PROPERTIES:
      :ID:       0ca60283-8031-44fc-bcfc-92c8e2e96b48
      :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mywibox[s] = awful.wibox({ position = "top", screen = s })
 #+end_src lua
 **** Add widgets to the wibox - order matters
      :PROPERTIES:
      :ID:       fad85da4-1e99-42fa-bc7d-ffdc56f7f78a
      :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   mywibox[s].widgets = {
      {
         mylauncher,
@@ -416,7 +414,7 @@ modkey = "Mod4"
      layout = awful.widget.layout.horizontal.rightleft
   }
 #+end_src lua
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   end
 #+end_src lua
 
@@ -424,7 +422,7 @@ modkey = "Mod4"
   :PROPERTIES:
   :ID:       baa0fc54-9874-40b1-a4a2-d437b0127cc1
   :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   root.buttons(awful.util.table.join(
       awful.button({ }, 3, function () mymainmenu:toggle() end),
       awful.button({ }, 4, awful.tag.viewnext),
@@ -437,7 +435,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       c1ae88a4-4691-41b3-a29d-05e8e14ed15d
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   function keyspawn (cmd)
      return function ()
                awful.util.spawn(cmd)
@@ -449,7 +447,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   globalkeys = awful.util.table.join(
 #+end_src lua
 *** The multimedia keys
@@ -457,7 +455,7 @@ modkey = "Mod4"
     :ID:       eb367b4a-5792-492b-b310-13ca003fa119
     :END:
     Do not forget to tell gnome to fuck off, and to let us play with them
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({}, "XF86AudioPlay",        keyspawn("nyxmms2 toggle")),
   awful.key({}, "XF86AudioStop",        keyspawn("nyxmms2 stop")),
   awful.key({}, "XF86AudioPrev",        keyspawn("nyxmms2 prev")),
@@ -476,7 +474,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       680522fc-7ef2-4cff-8239-1452059f9e6c
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
   awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
   awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
@@ -485,7 +483,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       5560214d-8006-4ef7-8595-3b828971aae2
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey,           }, "j",
       function ()
           awful.client.focus.byidx( 1)
@@ -523,14 +521,14 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       f2c83894-b731-445f-adb0-9d761da7bd0d
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey,           }, "w", function () mymainmenu:toggle()        end),
 #+end_src lua
 *** Layout manipulation
     :PROPERTIES:
     :ID:       881fb246-96c2-44a0-94b0-962682161742
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
   awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
   awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
@@ -549,7 +547,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       1300c9c7-81a2-44a5-b098-d691e6c6dcc3
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey, "Control" }, "Return", function () awful.util.spawn(terminal) end),
   awful.key({ modkey, "Control" }, "e", function () awful.util.spawn(emacs) end),
   awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(filemanager) end),
@@ -559,7 +557,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       44843d7a-9603-4a1f-972b-9956496a4c34
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey, "Control" }, "r", awesome.restart),
   awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 #+end_src lua
@@ -567,7 +565,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       f381c18f-333a-4bf3-b2c1-bacf05c70c86
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
   awful.key({ modkey }, "x",
@@ -582,14 +580,14 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       1b2e42e8-fa97-48c1-88ad-6e94e6599f68
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   )
 #+end_src lua
 ** the client keys
    :PROPERTIES:
    :ID:       56679e1e-96dd-4368-90d4-7511f5f51067
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   clientkeys = awful.util.table.join(
       awful.key({ modkey, "Ctrl"    }, "i",      give_info),
       awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
@@ -614,7 +612,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       b75d045a-5853-4b29-90ed-ca181c5ae812
     :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   keynumber = 0
   for s = 1, screen.count() do
      keynumber = math.min(9, math.max(#tags[s], keynumber));
@@ -627,7 +625,7 @@ modkey = "Mod4"
     :END:
     Be careful: we use keycodes to make it works on any keyboard layout.
     This should map on the top row of your keyboard, usually 1 to 9.
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   for i = 1, keynumber do
       globalkeys = awful.util.table.join(globalkeys,
           awful.key({ modkey }, "#" .. i + 9,
@@ -663,7 +661,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       bf6e8518-7b8a-4d45-9faf-dda7ea860819
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   clientbuttons = awful.util.table.join(
       awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
       awful.button({ modkey }, 1, awful.mouse.client.move),
@@ -674,7 +672,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       c04c1e56-f3db-40a8-831e-9207b81366df
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   root.keys(globalkeys)
 #+end_src lua
 
@@ -682,7 +680,7 @@ modkey = "Mod4"
   :PROPERTIES:
   :ID:       37b2ee4a-691f-4385-9e37-c8c0d220c3b8
   :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   awful.rules.rules = {
       -- All clients will match this rule.
       { rule = { },
@@ -719,8 +717,12 @@ modkey = "Mod4"
         properties = { tag = tags[1][4] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
+      { rule = { instance = "cairo-dock" },
+        properties = { ontop = true } },
       { rule = { instance = "abraca" },
         properties = { tag = tags[1][4] } },
+      { rule = { class = "Pidgin" },
+        properties = { tag = tags[1][6] } },
   }
 #+end_src lua
 * Signals
@@ -728,7 +730,7 @@ modkey = "Mod4"
    :PROPERTIES:
    :ID:       783918c3-b1ea-4da8-9e81-2f91e0c3dc7a
    :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   client.add_signal("manage",
                     function (c, startup)
                        -- Add a titlebar
@@ -751,7 +753,7 @@ modkey = "Mod4"
   :PROPERTIES:
   :ID:       1207a2ce-cdc8-4f57-b2e5-6f60f0a581cd
   :END:
-#+begin_src lua :tangle rc.lua
+#+begin_src lua :tangle myconf.lua
   -- awful.util.spawn("/usr/bin/nm-applet")
 
   autostart = {
