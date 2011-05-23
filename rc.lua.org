@@ -232,6 +232,27 @@ modkey = "Mod4"
 #+begin_src lua :tangle myconf.lua
   mytextclock = awful.widget.textclock({ align = "right" })
 #+end_src lua
+** Create a widget for when reboot is required
+*** The function to check the situation
+#+begin_src lua :tangle myconf.lua
+  function reboot_required()
+     tmp = io.open('/var/run/reboot-required')
+     io.stderr:write ('toto')
+     if tmp then
+        io.stderr:write ('titi')
+        tmp:close()
+        return '<span color="red">Reboot required</span>'
+     else
+        io.stderr:write ('tutu')
+        return ""
+     end
+  end
+#+end_src lua
+*** The widget
+#+begin_src lua :tangle myconf.lua
+  myneedreboot = widget({ type = "textbox" })
+  awful.hooks.timer.register(1, function() myneedreboot.text = reboot_required() end)
+#+end_src lua
 ** Create a systray
    :PROPERTIES:
    :ID:       278469e7-4e34-41d9-b2ae-a9943bda17c3
@@ -406,6 +427,7 @@ modkey = "Mod4"
         layout = awful.widget.layout.horizontal.leftright
      },
      mylayoutbox[s],
+     myneedreboot,
      mytextclock,
      mycpu,
      mymem,
