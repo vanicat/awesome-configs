@@ -450,18 +450,13 @@ modkey = "Mod4"
 #+end_src lua
 
 * Key bindings
-** first a usefull function to create function to spawn command
-   :PROPERTIES:
-   :ID:       c1ae88a4-4691-41b3-a29d-05e8e14ed15d
-   :END:
+** first useful functions to create keybinding to spawn command
+*** simple spawn
 #+begin_src lua :tangle myconf.lua
-  function keyspawn (cmd)
-     return function ()
-               awful.util.spawn(cmd)
-            end
+  function key_spawn (mod, key, cmd)
+     return awful.key(mod, key, function () awful.util.spawn(cmd) end)
   end
 #+end_src lua
-
 ** the global keys
    :PROPERTIES:
    :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
@@ -475,19 +470,19 @@ modkey = "Mod4"
     :END:
     Do not forget to tell gnome to not interfere, and to let us play with them
 #+begin_src lua :tangle myconf.lua
-  awful.key({}, "XF86AudioPlay",        keyspawn("nyxmms2 toggle")),
-  awful.key({}, "XF86AudioStop",        keyspawn("nyxmms2 stop")),
-  awful.key({}, "XF86AudioPrev",        keyspawn("nyxmms2 prev")),
-  awful.key({}, "XF86AudioNext",        keyspawn("nyxmms2 next")),
-  awful.key({}, "XF86AudioRaiseVolume", keyspawn("amixer set Master PLayback '2%+'")),
-  awful.key({}, "XF86AudioLowerVolume", keyspawn("amixer set Master PLayback '2%-'")),
-  awful.key({}, "XF86AudioMute",        keyspawn("amixer set Master toggle")),
-  awful.key({}, "XF86AudioMedia",       keyspawn("xbmc")),
-  awful.key({}, "XF86Music",            keyspawn("miro")),
-  awful.key({}, "XF86Tools",            keyspawn("gnome-volume-control.pulse")),
-  awful.key({}, "XF86Sleep",            keyspawn("sudo pm-hibernate")),
-  awful.key({}, "XF86HomePage",		keyspawn(webbrowser)),
-  awful.key({}, "XF86Mail",		keyspawn(emacs)),
+  key_spawn({}, "XF86AudioPlay",        "nyxmms2 toggle"),
+  key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
+  key_spawn({}, "XF86AudioPrev",        "nyxmms2 prev"),
+  key_spawn({}, "XF86AudioNext",        "nyxmms2 next"),
+  key_spawn({}, "XF86AudioRaiseVolume", "amixer set Master PLayback '2%+'"),
+  key_spawn({}, "XF86AudioLowerVolume", "amixer set Master PLayback '2%-'"),
+  key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
+  key_spawn({}, "XF86AudioMedia",       "xbmc"),
+  key_spawn({}, "XF86Music",            "miro"),
+  key_spawn({}, "XF86Tools",            "gnome-volume-control.pulse"),
+  key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
+  key_spawn({}, "XF86HomePage",		webbrowser),
+  key_spawn({}, "XF86Mail",		emacs),
 #+end_src lua
 *** Moving trough the tags
     :PROPERTIES:
