@@ -237,13 +237,10 @@ modkey = "Mod4"
 #+begin_src lua :tangle myconf.lua
   function reboot_required()
      tmp = io.open('/var/run/reboot-required')
-     io.stderr:write ('toto')
      if tmp then
-        io.stderr:write ('titi')
         tmp:close()
         return '<span color="red">Reboot required</span>'
      else
-        io.stderr:write ('tutu')
         return ""
      end
   end
