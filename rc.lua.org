@@ -87,6 +87,7 @@ beautiful.init(theme_path)
    However, you can use another modifier like Mod1, but it may interact with others.
 #+begin_src lua :tangle myconf.lua
 modkey = "Mod4"
+spawnkey = { modkey, "Control" }
 #+end_src lua
 
 ** Table of layouts to cover with awful.layout.inc, order matters.
@@ -511,6 +512,12 @@ modkey = "Mod4"
      return awful.key(mod, key, function () awful.util.spawn(cmd) end)
   end
 #+end_src lua
+*** another function for run_or_raise
+#+begin_src lua :tangle myconf.lua
+  function key_run_or_raise (mod, key, cmd, prop)
+     return awful.key(mod, key, function () run_or_raise(cmd, prop) end)
+  end
+#+end_src lua
 ** the global keys
    :PROPERTIES:
    :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
@@ -518,7 +525,7 @@ modkey = "Mod4"
 #+begin_src lua :tangle myconf.lua
   globalkeys = awful.util.table.join(
 #+end_src lua
-*** The multimedia keys
+*** The multimedia keys and standard program
     :PROPERTIES:
     :ID:       eb367b4a-5792-492b-b310-13ca003fa119
     :END:
@@ -531,12 +538,19 @@ modkey = "Mod4"
   key_spawn({}, "XF86AudioRaiseVolume", "amixer set Master PLayback '2%+'"),
   key_spawn({}, "XF86AudioLowerVolume", "amixer set Master PLayback '2%-'"),
   key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
-  key_spawn({}, "XF86AudioMedia",       "xbmc"),
-  key_spawn({}, "XF86Music",            "miro"),
-  key_spawn({}, "XF86Tools",            "gnome-volume-control.pulse"),
   key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
-  key_spawn({}, "XF86HomePage",		webbrowser),
-  key_spawn({}, "XF86Mail",		emacs),
+
+  key_spawn(spawnkey, "Return",         terminal),
+  key_spawn(spawnkey, "t",              filemanager),
+
+  key_run_or_raise({}, "XF86AudioMedia", "xbmc",                       { class = "xbmc.bin" }),
+  key_run_or_raise({}, "XF86Music",      "miro",                       { class = "Miro.real" }),
+  key_run_or_raise({}, "XF86Tools",      "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
+  key_run_or_raise(spawnkey, "v",        "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
+  key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = "Chromium" }),
+  key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = "Chromium" }),
+  key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
+  key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
 #+end_src lua
 *** Moving trough the tags
     :PROPERTIES:
@@ -610,16 +624,6 @@ modkey = "Mod4"
   awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
   awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
   awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
-#+end_src lua
-*** Standard program
-    :PROPERTIES:
-    :ID:       1300c9c7-81a2-44a5-b098-d691e6c6dcc3
-    :END:
-#+begin_src lua :tangle myconf.lua
-  awful.key({ modkey, "Control" }, "Return", function () awful.util.spawn(terminal) end),
-  awful.key({ modkey, "Control" }, "e", function () awful.util.spawn(emacs) end),
-  awful.key({ modkey, "Control" }, "t", function () awful.util.spawn(filemanager) end),
-  awful.key({ modkey, "Control" }, "f", function () awful.util.spawn(webbrowser) end),
 #+end_src lua
 *** Meta
     :PROPERTIES:
