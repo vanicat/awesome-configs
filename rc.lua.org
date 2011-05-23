@@ -473,7 +473,7 @@ modkey = "Mod4"
     :PROPERTIES:
     :ID:       eb367b4a-5792-492b-b310-13ca003fa119
     :END:
-    Do not forget to tell gnome to fuck off, and to let us play with them
+    Do not forget to tell gnome to not interfere, and to let us play with them
 #+begin_src lua :tangle myconf.lua
   awful.key({}, "XF86AudioPlay",        keyspawn("nyxmms2 toggle")),
   awful.key({}, "XF86AudioStop",        keyspawn("nyxmms2 stop")),
