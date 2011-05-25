@@ -62,7 +62,7 @@ beautiful.init(theme_path)
    :END:
 #+begin_src lua :tangle myconf.lua
   terminal = "x-terminal-emulator"
-  emacs = "myemacs-n"
+  emacs = "myemacs-n2"
   if hostname == "corbeau" or hostname == "toubib"  then
     filemanager = "nautilus"
   else
