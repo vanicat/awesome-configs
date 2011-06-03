@@ -833,7 +833,7 @@ spawnkey = { modkey, "Control" }
      { exec = "/usr/lib/at-spi/at-spi-registryd" },
      { exec = "/usr/bin/pidgin",
        hosts = Set { "corbeau" }, },
-     { exec = "/usr/lib/chromium/chromium", startas = "/usr/bin/chromium" } },
+     { exec = "/usr/lib/chromium/chromium", startas = "/usr/bin/chromium" },
      { exec = "/usr/bin/orage" },
      { exec = "/usr/bin/wmname", args = "compiz" },
      { exec = "/usr/bin/xscreensaver", args = "-no-splash",
