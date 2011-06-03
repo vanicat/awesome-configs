@@ -68,8 +68,8 @@ beautiful.init(theme_path)
   else
      filemanager = "thunar"
   end
-  if hostname == "corbeau" or hostname == "toubib" then
-     webbrowser = "chromium-browser"
+  if true then
+     webbrowser = "chromium"
   else
      webbrowser = "iceweasel"
   end
@@ -833,10 +833,7 @@ spawnkey = { modkey, "Control" }
      { exec = "/usr/lib/at-spi/at-spi-registryd" },
      { exec = "/usr/bin/pidgin",
        hosts = Set { "corbeau" }, },
-     { exec = "/usr/lib/iceweasel/firefox-bin", startas = "/usr/bin/iceweasel",
-       hosts = Set { "maison", "acer" } },
-     { exec = "/usr/lib/chromium-browser/chromium-browser", startas = "/usr/bin/chromium-browser",
-       hosts = Set { "corbeau", "toubib" } },
+     { exec = "/usr/lib/chromium/chromium", startas = "/usr/bin/chromium" } },
      { exec = "/usr/bin/orage" },
      { exec = "/usr/bin/wmname", args = "compiz" },
      { exec = "/usr/bin/xscreensaver", args = "-no-splash",
