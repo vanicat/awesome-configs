@@ -790,11 +790,13 @@ spawnkey = { modkey, "Control" }
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
-        properties = { ontop = true } },
+        properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
         properties = { tag = tags[1][4] } },
       { rule = { class = "Pidgin" },
         properties = { tag = tags[1][6] } },
+      { rule = { instance = "x-nautilus-desktop" },
+        properties = { focusable = false } },
   }
 #+end_src lua
 * Signals
