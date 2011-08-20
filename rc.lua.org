@@ -797,6 +797,8 @@ spawnkey = { modkey, "Control" }
         properties = { tag = tags[1][6] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
+      { rule = { instance = "Nautilus" },
+        properties = { focusable = false } },
   }
 #+end_src lua
 * Signals
