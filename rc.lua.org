@@ -822,6 +822,8 @@ spawnkey = { modkey, "Control" }
    :ID:       783918c3-b1ea-4da8-9e81-2f91e0c3dc7a
    :END:
 #+begin_src lua :tangle myconf.lua
+  focus_by_mouse = false
+
   client.add_signal("manage",
                     function (c, startup)
                        -- Add a titlebar
@@ -832,11 +834,19 @@ spawnkey = { modkey, "Control" }
                                                        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
                                                        and awful.client.focus.filter(c) then
                                                        client.focus = c
+                                                       focus_by_mouse = true
                                                     end
                                                  end)
                     end)
 
-  client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+  client.add_signal("focus", function(c)
+                                c.border_color = beautiful.border_focus
+                                if not focus_by_mouse then
+                                   c:raise()
+                                else
+                                   focus_by_mouse = false
+                                end
+                             end)
   client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 #+end_src lua
 
