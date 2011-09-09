@@ -848,37 +848,6 @@ spawnkey = { modkey, "Control" }
   -- awful.util.spawn("/usr/bin/nm-applet")
 
   autostart = {
-     { exec = "/usr/bin/gnome-settings-daemon" },
-     { exec = "/usr/lib/at-spi/at-spi-registryd" },
-     { exec = "/usr/bin/pidgin",
-       hosts = Set { "corbeau" }, },
-     { exec = "/usr/lib/chromium/chromium", startas = "/home/moi/bin/mychrome" },
-     { exec = "/usr/bin/orage" },
-     { exec = "/usr/bin/wmname", args = "compiz" },
-     { exec = "/usr/bin/xscreensaver", args = "-no-splash",
-       hosts = Set { "corbeau", "acer" } },
-     { exec = "/usr/bin/gnome-power-manager",
-       hosts = Set { "acer" } },
-     { name = "wicd-client", startas = "/usr/bin/wicd-client",
-       hosts = Set { "acer" } },
-     { exec = "/usr/bin/xmms2d", startas = "/usr/bin/xmms2-launcher",
-       hosts = Set { "toubib" } },
-     { exec = "/usr/bin/abraca",
-       hosts = Set { "toubib", "corbeau" } },
-     { exec = "/home/moi/bin/xmms-gtk-rater",
-       hosts = Set { "toubib", "corbeau" } },
-     { exec = "/usr/bin/miro",
-       hosts = Set { "maison", "toubib" } },
-     { name = "podcast-reader", startas = "/home/moi/bin/podcast-reader",
-       hosts = Set { "toubib" } },
-     { exec = "/usr/bin/xcompmgr",
-       hosts = Set { "corbeau", } },
-     { exec = "/usr/bin/cairo-dock", args = "-c",
-       hosts = Set { "corbeau", } },
-     { exec = "/usr/bin/nautilus", args = "-n",
-       hosts = Set { "corbeau", } },
-     { exec = "/usr/bin/transmission",
-       hosts = Set { "toubib" } },
   }
 
   function mylauch(prgm)
@@ -908,3 +877,82 @@ spawnkey = { modkey, "Control" }
      mylauch(prgm)
   end
 #+end_src lua
+* the xsessionrc
+  #+begin_src sh :tangle ~/.xsessionrc
+    cd ~/.config/awesome/
+    make
+    cd
+
+    export EDITOR=myemacs
+    # export GDK_NATIVE_WINDOWS=1 #was for acroread
+
+    if [ ! "toubib" = `hostname` ]; then
+        export XMMS_PATH=tcp://toubib:9667
+    fi
+
+    # there are probably better way to do this
+    xrandr --output LVDS --auto
+    xrandr --output VGA-0 --auto
+    xrandr --output VGA-0 --right-of LVDS
+    xrandr --output DVI-1 --auto
+    xrandr --output DVI-0 --auto
+    xrandr --output DVI-0 --left-of DVI-1
+
+    if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
+       xrandr --output default --mode 1360x768
+    else
+       xrandr --output default --auto
+    fi
+
+    keychain
+    if [ -e ~/.keychain/$(hostname)-sh ]; then
+          . ~/.keychain/$(hostname)-sh
+    fi
+
+    $(dbus-launch --sh-syntax)
+
+    pulseaudio --daemonize
+    aumix -L
+    if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
+       xrandr --output default --mode 1360x768
+    else
+       xrandr --output default --auto
+    fi
+
+    if [ -d /usr/lib/vdpau/ ]; then
+        export LD_LIBRARY_PATH=/usr/lib/vdpau/
+    fi
+
+    if [ $XAUTHORITY -a -r $XAUTHORITY -a $XAUTHORITY != $HOME/.Xauthority ]; then
+        cp $XAUTHORITY $HOME/.Xauthority
+        export XAUTHORITY=$HOME/.Xauthority
+    fi
+
+
+    /usr/bin/gnome-settings-daemon &
+    /usr/lib/at-spi/at-spi-registryd &
+    /home/moi/bin/mychrome &
+    /usr/bin/orage &
+    /usr/bin/wmname compiz &
+
+    if [ `hostname` = "corbeau" ]; then
+        /usr/bin/pidgin &
+        /usr/bin/xscreensaver -no-splash &
+        /usr/bin/abraca &
+        /home/moi/bin/xmms-gtk-rater &
+        /usr/bin/xcompmgr &
+        /usr/bin/cairo-dock -c &
+    elif [ `hostname` = "acer" ]; then
+        /usr/bin/xscreensaver -no-splash &
+        /usr/bin/gnome-power-manager &
+        /usr/bin/wicd-client &
+    elif [ `hostname` = "toubib" ]; then
+        /usr/bin/xmms2-launcher &
+        /usr/bin/abraca &
+        /home/moi/bin/xmms-gtk-rater &
+        /usr/bin/miro &
+        /home/moi/bin/podcast-reader &
+        /usr/bin/transmission &
+    fi
+
+  #+end_src
