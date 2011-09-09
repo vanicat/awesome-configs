@@ -289,20 +289,17 @@ spawnkey = { modkey, "Control" }
 #+end_src lua
 ** Add an orglendar to the textclock
 #+begin_src lua :tangle myconf.lua
-  require("orglendar")
-  orglendar.files = {
-     "~/org/prgm.org",
-     "~/org/notes.org",
-     "~/org/mononoke.org",
-     "~/org/personel.org",
-     "~/org/aniversaire.org",
-     "~/org/cours.org",
-     "~/travail/cours/snd/2010_201/notes-snd-01.org",
-     "~/travail/cours/snd/mps/mps.org",
-     "~/travail/cours/premiere/2010-2011 S/note-1S2-2010.org",
-     "~/travail/cours/premiere/2010-2011 STG/note-stg-10.org"
-  }
-  orglendar.register(mytextclock)
+  -- require("orglendar")
+  -- orglendar.files = {
+  --    "~/org/prgm.org",
+  --    "~/org/notes.org",
+  --    "~/org/mononoke.org",
+  --    "~/org/personel.org",
+  --    "~/org/aniversaire.org",
+  --    "~/org/cours.org",
+  --    "~/travail/cours/premiere/2011-2012 S/premiere-S1-G1.org",
+  -- }
+  -- orglendar.register(mytextclock)
 #+end_src
 
 ** Create a widget for when reboot is required
