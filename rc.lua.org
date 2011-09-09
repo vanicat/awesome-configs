@@ -771,6 +771,8 @@ spawnkey = { modkey, "Control" }
   :ID:       37b2ee4a-691f-4385-9e37-c8c0d220c3b8
   :END:
 #+begin_src lua :tangle myconf.lua
+  fst_screen=1
+  snd_screen=screen.count()
   awful.rules.rules = {
       -- All clients will match this rule.
       { rule = { },
@@ -800,19 +802,19 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "Keepassx"},
         properties = { tag = tags[1][6] } },
       { rule = { instance = "gajim.py" },
-        properties = { tag = tags[1][3] } },
+        properties = { tag = tags[snd_screen][3] } },
       { rule = { class = "Transmission" },
         properties = { tag = tags[1][9] } },
       { rule = { instance = "xmms-gtk-rater" },
-        properties = { tag = tags[1][4] } },
+        properties = { tag = tags[snd_screen][4] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
-        properties = { tag = tags[1][4] } },
+        properties = { tag = tags[snd_screen][4] } },
       { rule = { class = "Pidgin" },
-        properties = { tag = tags[1][6] } },
+        properties = { tag = tags[snd_screen][6] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
   }
