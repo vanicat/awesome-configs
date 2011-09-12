@@ -63,8 +63,8 @@ beautiful.init(theme_path)
 #+begin_src lua :tangle myconf.lua
   terminal = "x-terminal-emulator"
   emacs = "myemacs-n2"
-  if false  then
-    filemanager = "nautilus"
+  if hostname == "corbeau" then
+    filemanager = "pcmanfm"
   else
      filemanager = "thunar"
   end
