@@ -212,13 +212,14 @@ spawnkey = { modkey, "Control" }
    :END:
 #+begin_src lua :tangle myconf.lua
   tags_config = {
-     { name = "te", layout = term_layout, mfact = 0.5 },
-     { name = "em", layout = awful.layout.suit.max, mfact = 0.75 },
-     { name = "net", layout = awful.layout.suit.max, mfact = 0.75 },
-     { name = "pl", layout = default_layout, mfact = 0.5 },
-     { name = "fm", layout = default_layout, mfact = 0.5 },
-     { name = "IM", layout = default_layout, mfact = 0.5 },
-     { name = "7", layout = default_layout, mfact = 0.5 },
+     { name = "te", tag_conf = { layout = term_layout, mfact = 0.5 } },
+     { name = "em", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
+     { name = "net", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
+     { name = "pl", tag_conf = { layout = default_layout, mfact = 0.5 }},
+     { name = "fm", tag_conf = { layout = default_layout, mfact = 0.5 }},
+     { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = screen.count() },
+     { name = "sup1", tag_conf = { layout = default_layout, mfact = 0.5 }},
+     { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = 1 },
   }
 #+end_src lua
 ** Define a tag table which hold all screen tags.
@@ -227,14 +228,23 @@ spawnkey = { modkey, "Control" }
    :END:
 #+begin_src lua :tangle myconf.lua
   tags = {}
+  tag_by_name = { }
+  print(tags)
   for s = 1, screen.count() do
       -- Each screen has its own tag table.
-      tags[s] = awful.tag({ "tr", "em", "net", "pl", "fm", "IM", 7, 8, 9 }, s, awful.layout.suit.max)
+      tags[s] = { }
       for i, t in ipairs(tags_config) do
-         awful.layout.set(t.layout, tags[s][i])
-         awful.tag.setmwfact(t.mfact,tags[s][i])
+         if not t.only_on or t.only_on == s then
+            t.tag_conf.screen = s
+            tag=awful.tag.add(t.name,t.tag_conf)
+            table.insert(tags[s],tag)
+            if tag_by_name[t.name] then
+               table.insert(tag_by_name[t.name],tag)
+            else
+               tag_by_name[t.name]= { tag }
+            end
+         end
       end
-
    end
 #+end_src lua
 
@@ -800,9 +810,9 @@ spawnkey = { modkey, "Control" }
                        keys = clientkeys,
                        buttons = clientbuttons } },
       { rule = { class = "Chromium-browser" },
-        properties = { tag = tags[1][3] } },
+        properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "Chromium" },
-        properties = { tag = tags[1][3] } },
+        properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "MPlayer" },
         properties = { floating = true } },
       { rule = { class = "pinentry" },
@@ -810,29 +820,27 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "gimp" },
         properties = { floating = true } },
       { rule = { class = "Iceweasel" },
-        properties = { tag = tags[1][3] } },
+        properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "X-www-browser" },
-        properties = { tag = tags[1][3] } },
+        properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "Emacs" },
-        properties = { tag = tags[1][2] } },
+        properties = { tag = tag_by_name["em"][1] } },
       { rule = { class = "Miro.real"},
-        properties = { tag = tags[1][4] } },
-      { rule = { class = "Keepassx"},
-        properties = { tag = tags[1][6] } },
+        properties = { tag = tag_by_name["pl"][snd_screen] } },
       { rule = { instance = "gajim.py" },
-        properties = { tag = tags[snd_screen][3] } },
+        properties = { tag = tag_by_name["IM"][1] } },
       { rule = { class = "Transmission" },
-        properties = { tag = tags[1][9] } },
+        properties = { tag = tag_by_name["sup2"][1] } },
       { rule = { instance = "xmms-gtk-rater" },
-        properties = { tag = tags[snd_screen][4] } },
+        properties = { tag = tag_by_name["pl"][snd_screen] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
-        properties = { tag = tags[snd_screen][4] } },
+        properties = { tag = tag_by_name["pl"][snd_screen] } },
       { rule = { class = "Pidgin" },
-        properties = { tag = tags[snd_screen][6] } },
+        properties = { tag = tag_by_name["IM"][1] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
   }
