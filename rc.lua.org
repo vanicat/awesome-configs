@@ -579,6 +579,24 @@ spawnkey = { modkey, "Control" }
   awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
   awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 #+end_src lua
+**** The same but for the other screen
+#+begin_src lua :tangle myconf.lua
+  awful.key({ modkey, "Control" }, "Left", function ()
+                                              awful.screen.focus_relative( 1 )
+                                              awful.tag.viewprev()
+                                              awful.screen.focus_relative( -1 )
+                                           end),
+  awful.key({ modkey, "Control" }, "Right", function ()
+                                               awful.screen.focus_relative( 1 )
+                                               awful.tag.viewnext()
+                                               awful.screen.focus_relative( -1 )
+                                            end),
+  awful.key({ modkey, "Control" }, "Escape", function ()
+                                                awful.screen.focus_relative( 1 )
+                                                awful.tag.history.restore()
+                                                awful.screen.focus_relative( -1 )
+                                             end),
+#+end_src lua
 *** Changing focus
     :PROPERTIES:
     :ID:       5560214d-8006-4ef7-8595-3b828971aae2
