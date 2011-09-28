@@ -845,6 +845,31 @@ spawnkey = { modkey, "Control" }
         properties = { focusable = false } },
   }
 #+end_src lua
+** Black magick for chromium on both screen
+#+BEGIN_SRC lua :tangle myconf.lua
+  function select_chromium(tag)
+     local clients = client.get()
+     local properties = { class = "Chromium" }
+     local n = 0
+     local matched_clients = { }
+
+     for i, c in pairs(clients) do
+        --make an array of matched clients
+        if match(properties, c) then
+           c:tags({ tag })
+           c.screen=tag.screen
+        end
+     end
+  end
+
+  if not(fst_screen == snd_screen) then
+     for s = fst_screen, snd_screen do
+        tag_by_name["net"][s]:add_signal("property::selected",select_chromium)
+     end
+  end
+
+#+END_SRC
+
 * Signals
 ** Signal function to execute when a new client appears.
    :PROPERTIES:
