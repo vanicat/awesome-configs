@@ -269,7 +269,10 @@ spawnkey = { modkey, "Control" }
      {
         { "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
-        { "hibernate", function () awful.util.spawn("sudo /usr/sbin/pm-hibernate") end },
+        { "hibernate", function ()
+                          awful.util.spawn("xscreensaver-comand -lock")
+                          awful.util.spawn("sudo /usr/sbin/pm-hibernate")
+                       end },
         ( (hostname == "acer") and
           { "clone display", function () awful.util.spawn("/home/moi/bin/xrandr-clone") end } or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
