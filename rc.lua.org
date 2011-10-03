@@ -270,7 +270,9 @@ spawnkey = { modkey, "Control" }
         { "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
         { "hibernate", function ()
-                          awful.util.spawn("xscreensaver-comand -lock")
+                          if hostname == "acer" then
+                             awful.util.spawn("xscreensaver-command -lock")
+                          end
                           awful.util.spawn("sudo /usr/sbin/pm-hibernate")
                        end },
         ( (hostname == "acer") and
