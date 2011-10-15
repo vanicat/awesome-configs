@@ -988,7 +988,8 @@ spawnkey = { modkey, "Control" }
           . ~/.keychain/$(hostname)-sh
     fi
 
-    $(dbus-launch --sh-syntax)
+    eval $(dbus-launch --sh-syntax)
+    export DBUS_SESSION_BUS_PID
 
     pulseaudio --daemonize
     aumix -L
