@@ -1025,7 +1025,7 @@ spawnkey = { modkey, "Control" }
     elif [ `hostname` = "acer" ]; then
         /usr/bin/xscreensaver -no-splash &
         /usr/bin/gnome-power-manager &
-        /usr/bin/wicd-client &
+        /usr/bin/nm-applet &
     elif [ `hostname` = "toubib" ]; then
         /usr/bin/xmms2-launcher &
         /usr/bin/abraca &
