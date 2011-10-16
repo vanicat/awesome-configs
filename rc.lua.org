@@ -990,7 +990,8 @@ spawnkey = { modkey, "Control" }
           . ~/.keychain/$(hostname)-sh
     fi
 
-    $(dbus-launch --sh-syntax)
+    eval $(dbus-launch --sh-syntax)
+    export DBUS_SESSION_BUS_PID
 
     pulseaudio --daemonize
     aumix -L
@@ -1026,7 +1027,7 @@ spawnkey = { modkey, "Control" }
     elif [ `hostname` = "acer" ]; then
         /usr/bin/xscreensaver -no-splash &
         /usr/bin/gnome-power-manager &
-        /usr/bin/wicd-client &
+        /usr/bin/nm-applet &
     elif [ `hostname` = "toubib" ]; then
         /usr/bin/xmms2-launcher &
         /usr/bin/abraca &
