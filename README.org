@@ -8,4 +8,8 @@ recent version will be needed.
 You should change ORG_PATH in the Makefile to tell him where org-mode
 is.
 
+Modification are probably needed for emacs24, as it already include
+org-mode.
 
+Note that this will overwrite the ~/.xsessionrc, so look for any
+configuration you might have there.
