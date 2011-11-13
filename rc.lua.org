@@ -874,8 +874,10 @@ spawnkey = { modkey, "Control" }
 
      if(tag_by_name["net"][fst_screen].selected) then
         ntag = tag_by_name["net"][fst_screen]
-     else
+     elseif (tag_by_name["net"][snd_screen].selected) then
         ntag = tag_by_name["net"][snd_screen]
+     else
+        return nil
      end
      for i, c in pairs(clients) do
         if match(properties, c) then
