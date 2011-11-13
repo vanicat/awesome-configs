@@ -868,14 +868,16 @@ spawnkey = { modkey, "Control" }
   function select_chromium(tag)
      local clients = client.get()
      local properties = { class = "Chromium" }
-     local n = 0
-     local matched_clients = { }
 
+     if(tag_by_name["net"][fst_screen].selected) then
+        ntag = tag_by_name["net"][fst_screen]
+     else
+        ntag = tag_by_name["net"][snd_screen]
+     end
      for i, c in pairs(clients) do
-        --make an array of matched clients
         if match(properties, c) then
-           c:tags({ tag })
-           c.screen=tag.screen
+           c.screen=ntag.screen
+           c:tags({ ntag })
         end
      end
   end
