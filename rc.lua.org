@@ -278,6 +278,9 @@ spawnkey = { modkey, "Control" }
         ( (hostname == "acer") and
           { "clone display", function () awful.util.spawn("/home/moi/bin/xrandr-clone") end } or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
+        ( (hostname == "acer") and
+          { "std display", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } or
+          nil),
         { "restart", awesome.restart },
         { "quit", awesome.quit }
      }
