@@ -11,8 +11,7 @@
   -- Notification library
   require("naughty")
   require("wicked")
-  require("obvious.cpu")
-  require("obvious.mem")
+  require("vicious")
   require('freedesktop.utils')
 #+end_src lua
 * Variable definitions
@@ -353,8 +352,26 @@ spawnkey = { modkey, "Control" }
    :ID:       481ba62a-1c6c-45d9-9e61-fea09a243dc3
    :END:
 #+begin_src lua :tangle myconf.lua
-  mycpu = obvious.cpu():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('red')
-  mymem = obvious.mem():set_type("graph"):set_layout(awful.widget.layout.horizontal.rightleft):set_width(20):set_color('blue')
+  cpuwidget = awful.widget.graph()
+  cpuwidget:set_width(20)
+  cpuwidget:set_background_color("#494B4F")
+  cpuwidget:set_color("#FF5656")
+  cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
+  vicious.register(cpuwidget, vicious.widgets.cpu, "$1", 3)
+
+  memwidget = awful.widget.graph()
+  memwidget:set_width(20)
+  memwidget:set_background_color("#494B4F")
+  memwidget:set_color("#0000ff")
+  memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
+  vicious.register(memwidget, vicious.widgets.mem, "$1", 30)
+
+  tempwidget = awful.widget.graph()
+  tempwidget:set_width(20)
+  tempwidget:set_background_color("#494B4F")
+  tempwidget:set_color("#8b0000")
+  tempwidget:set_gradient_colors({ "#ff0000", "#ff4500", "#ff8c00" })
+  vicious.register(tempwidget, vicious.widgets.thermal, "$1", 30, { "../pci0000:00/0000:00:01.0/0000:01:00.0/hwmon/hwmon1/", "core" })
 #+end_src lua
 ** Create a widget for each screen.
 *** First define array for each type of widget
@@ -517,8 +534,9 @@ spawnkey = { modkey, "Control" }
      mylayoutbox[s],
      myneedreboot,
      mytextclock,
-     mycpu,
-     mymem,
+     cpuwidget.widget,
+     memwidget.widget,
+     tempwidget.widget,
      s == screen.count() and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
