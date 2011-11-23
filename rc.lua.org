@@ -78,7 +78,7 @@
     :ID:       81f2faf6-0b2d-4de5-bbed-f3f8eca27d7f
     :END:
 #+begin_src lua :tangle myconf.lua
-beautiful.init(theme_path)
+  beautiful.init(theme_path)
 #+end_src lua
 ** This is used later as the default terminal and editor to run.
    :PROPERTIES:
