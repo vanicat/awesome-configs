@@ -750,6 +750,7 @@ spawnkey = { modkey, "Control" }
                                            awful.menu({
                                                          items = { { "yes", awesome.quit },
                                                                    { "no", function () end },
+                                                                   { "hibernate", hibernate },
                                                                    { "restart", awesome.restart } }
                                                       }):show({ keygrabber = true })
                                         end ),
