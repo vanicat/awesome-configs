@@ -1078,7 +1078,6 @@ spawnkey = { modkey, "Control" }
     /usr/bin/gnome-settings-daemon &
     /usr/lib/at-spi/at-spi-registryd &
     /home/moi/bin/mychrome &
-    /usr/bin/orage &
     /usr/bin/wmname compiz &
 
     if [ `hostname` = "corbeau" ]; then
