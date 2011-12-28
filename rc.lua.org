@@ -289,16 +289,18 @@ spawnkey = { modkey, "Control" }
    :ID:       a8a3dd0d-34d7-4103-a3ab-6600877364cb
    :END:
 #+begin_src lua :tangle myconf.lua
+  hibernate = function ()
+                 if hostname == "acer" then
+                    awful.util.spawn("xscreensaver-command -lock")
+                 end
+                 awful.util.spawn("sudo /usr/sbin/pm-hibernate")
+              end
+
   myawesomemenu =
      {
         { "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
-        { "hibernate", function ()
-                          if hostname == "acer" then
-                             awful.util.spawn("xscreensaver-command -lock")
-                          end
-                          awful.util.spawn("sudo /usr/sbin/pm-hibernate")
-                       end },
+        { "hibernate", hibernate },
         ( (hostname == "acer") and
           { "clone display", function () awful.util.spawn("/home/moi/bin/xrandr-clone") end } or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
