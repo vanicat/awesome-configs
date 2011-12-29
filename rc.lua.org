@@ -1079,7 +1079,7 @@ spawnkey = { modkey, "Control" }
     /usr/lib/at-spi/at-spi-registryd &
     /home/moi/bin/mychrome &
     /usr/bin/wmname compiz &
-    tmux new-session -d "offlineimap -a Gmail Laposte"
+    tmux new-session -d "offlineimap -a Gmail,Laposte"
 
     if [ `hostname` = "corbeau" ]; then
         /usr/bin/pidgin &
