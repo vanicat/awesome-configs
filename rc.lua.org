@@ -615,8 +615,12 @@ spawnkey = { modkey, "Control" }
 #+begin_src lua :tangle myconf.lua
   key_spawn({}, "XF86AudioPlay",        "nyxmms2 toggle"),
   key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
+
   key_spawn({}, "XF86AudioPrev",        "nyxmms2 prev"),
   key_spawn({}, "XF86AudioNext",        "nyxmms2 next"),
+
+  key_spawn({ "Ctrl" }, "XF86AudioPlay",        "nyxmms2 stop"),
+  key_spawn({ "Ctrl" }, "XF86AudioNext",        "xmms-rater 1; nyxmms2 next"),
 
   key_spawn({}, "XF86AudioRaiseVolume", "pactl set-sink-volume 0 +2%"),
   key_spawn({}, "XF86AudioLowerVolume", "pactl set-sink-volume 0 -2%"),
