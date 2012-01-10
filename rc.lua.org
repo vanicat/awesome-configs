@@ -617,8 +617,9 @@ spawnkey = { modkey, "Control" }
   key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
   key_spawn({}, "XF86AudioPrev",        "nyxmms2 prev"),
   key_spawn({}, "XF86AudioNext",        "nyxmms2 next"),
-  key_spawn({}, "XF86AudioRaiseVolume", "amixer set Master PLayback '2%+'"),
-  key_spawn({}, "XF86AudioLowerVolume", "amixer set Master PLayback '2%-'"),
+
+  key_spawn({}, "XF86AudioRaiseVolume", "pactl set-sink-volume 0 +2%"),
+  key_spawn({}, "XF86AudioLowerVolume", "pactl set-sink-volume 0 -2%"),
   key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
   key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
 
