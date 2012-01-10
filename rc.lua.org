@@ -269,6 +269,7 @@ spawnkey = { modkey, "Control" }
             end
          end
       end
+      awful.tag.viewtoggle(tags[s][1])
    end
 #+end_src lua
 
