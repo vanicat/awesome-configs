@@ -297,17 +297,17 @@ spawnkey = { modkey, "Control" }
                  awful.util.spawn("sudo /usr/sbin/pm-hibernate")
               end
 
+  displaymenu =  { "display", {
+                      { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
+                      { "standart", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } } }
+
   myawesomemenu =
      {
         { "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
         { "hibernate", hibernate },
-        ( (hostname == "acer") and
-          { "clone display", function () awful.util.spawn("/home/moi/bin/xrandr-clone") end } or
+        ( (hostname == "acer") and displaymenu or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
-        ( (hostname == "acer") and
-          { "std display", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } or
-          nil),
         { "restart", awesome.restart },
         { "quit", awesome.quit }
      }
