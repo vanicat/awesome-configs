@@ -1041,18 +1041,14 @@ spawnkey = { modkey, "Control" }
         export XMMS_PATH=tcp://toubib:9667
     fi
 
-    # there are probably better way to do this
-    xrandr --output LVDS --auto
-    xrandr --output VGA-0 --auto
-    xrandr --output VGA-0 --right-of LVDS
-    xrandr --output DVI-1 --auto
-    xrandr --output DVI-0 --auto
-    xrandr --output DVI-0 --left-of DVI-1
+    if [ $(hostname) = "corbeau" ]; then
+        xrandr --output DVI-1 --rotate left
+        xrandr --output DVI-0 --auto
+        xrandr --output DVI-0 --left-of DVI-1
+    fi
 
     if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
        xrandr --output default --mode 1360x768
-    else
-       xrandr --output default --auto
     fi
 
     keychain
@@ -1065,11 +1061,6 @@ spawnkey = { modkey, "Control" }
 
     pulseaudio --daemonize
     aumix -L
-    if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
-       xrandr --output default --mode 1360x768
-    else
-       xrandr --output default --auto
-    fi
 
     if [ -d /usr/lib/vdpau/ ]; then
         export LD_LIBRARY_PATH=/usr/lib/vdpau/
