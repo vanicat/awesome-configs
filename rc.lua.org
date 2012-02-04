@@ -1072,7 +1072,6 @@ spawnkey = { modkey, "Control" }
 
     if [ `hostname` = "corbeau" ]; then
         /usr/bin/pidgin &
-        /usr/bin/xscreensaver -no-splash &
         /usr/bin/abraca &
         /home/moi/bin/xmms-gtk-rater &
         /usr/bin/xcompmgr &
