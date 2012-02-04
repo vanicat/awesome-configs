@@ -1076,25 +1076,19 @@ spawnkey = { modkey, "Control" }
         /home/moi/bin/xmms-gtk-rater &
         /usr/bin/xcompmgr &
         /usr/bin/cairo-dock -c &
-    else
+    elif [ `hostname` = "toubib" ]; then
         pulseaudio --daemonize
         aumix -L
         /usr/bin/gnome-settings-daemon &
         /usr/lib/at-spi/at-spi-registryd &
         /home/moi/bin/mychrome &
         tmux new-session -d "offlineimap -a Gmail,Laposte"
-
-        if [ `hostname` = "acer" ]; then
-            /usr/bin/xscreensaver -no-splash &
-            /usr/bin/nm-applet &
-        elif [ `hostname` = "toubib" ]; then
-            /usr/bin/xmms2-launcher &
-            /usr/bin/abraca &
-            /home/moi/bin/xmms-gtk-rater &
-            /usr/bin/miro &
-            /home/moi/bin/podcast-reader &
-            /usr/bin/transmission &
-        fi
+        /usr/bin/xmms2-launcher &
+        /usr/bin/abraca &
+        /home/moi/bin/xmms-gtk-rater &
+        /usr/bin/miro &
+        /home/moi/bin/podcast-reader &
+        /usr/bin/transmission &
     fi
   #+end_src
 
