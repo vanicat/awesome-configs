@@ -1101,7 +1101,7 @@ spawnkey = { modkey, "Control" }
 
 * System wide config
   All this should NOT be in /usr but in /usr/local.
-** The /usr/share/applications/awesome.desktop
+** The /usr/local/share/applications/awesome.desktop
    #+begin_src conf :tangle no
      [Desktop Entry]
      Version=1.0
@@ -1111,7 +1111,7 @@ spawnkey = { modkey, "Control" }
      TryExec=awesome
      Exec=awesome
    #+end_src
-** The /usr/share/xsessions/gnome-awesome.desktop
+** The /etc/X11/sessions/gnome-awesome.desktop
    #+begin_src conf :tangle no
      [Desktop Entry]
      Name=Awesome GNOME
@@ -1120,7 +1120,7 @@ spawnkey = { modkey, "Control" }
      Exec=gnome-session-awesome
      Type=XSession
    #+end_src
-** The /usr/bin/gnome-session-awesome
+** The /usr/local/bin/gnome-session-awesome
    #+begin_src sh :tangle no
      #!/bin/bash
      exec gnome-session --session awesome "$@"
