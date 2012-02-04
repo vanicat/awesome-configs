@@ -1059,9 +1059,6 @@ spawnkey = { modkey, "Control" }
     eval $(dbus-launch --sh-syntax)
     export DBUS_SESSION_BUS_PID
 
-    pulseaudio --daemonize
-    aumix -L
-
     if [ -d /usr/lib/vdpau/ ]; then
         export LD_LIBRARY_PATH=/usr/lib/vdpau/
     fi
@@ -1071,12 +1068,7 @@ spawnkey = { modkey, "Control" }
         export XAUTHORITY=$HOME/.Xauthority
     fi
 
-
-    /usr/bin/gnome-settings-daemon &
-    /usr/lib/at-spi/at-spi-registryd &
-    /home/moi/bin/mychrome &
     /usr/bin/wmname compiz &
-    tmux new-session -d "offlineimap -a Gmail,Laposte"
 
     if [ `hostname` = "corbeau" ]; then
         /usr/bin/pidgin &
@@ -1085,16 +1077,24 @@ spawnkey = { modkey, "Control" }
         /home/moi/bin/xmms-gtk-rater &
         /usr/bin/xcompmgr &
         /usr/bin/cairo-dock -c &
-    elif [ `hostname` = "acer" ]; then
-        /usr/bin/xscreensaver -no-splash &
-        /usr/bin/nm-applet &
-    elif [ `hostname` = "toubib" ]; then
-        /usr/bin/xmms2-launcher &
-        /usr/bin/abraca &
-        /home/moi/bin/xmms-gtk-rater &
-        /usr/bin/miro &
-        /home/moi/bin/podcast-reader &
-        /usr/bin/transmission &
-    fi
+    else
+        pulseaudio --daemonize
+        aumix -L
+        /usr/bin/gnome-settings-daemon &
+        /usr/lib/at-spi/at-spi-registryd &
+        /home/moi/bin/mychrome &
+        tmux new-session -d "offlineimap -a Gmail,Laposte"
 
+        if [ `hostname` = "acer" ]; then
+            /usr/bin/xscreensaver -no-splash &
+            /usr/bin/nm-applet &
+        elif [ `hostname` = "toubib" ]; then
+            /usr/bin/xmms2-launcher &
+            /usr/bin/abraca &
+            /home/moi/bin/xmms-gtk-rater &
+            /usr/bin/miro &
+            /home/moi/bin/podcast-reader &
+            /usr/bin/transmission &
+        fi
+    fi
   #+end_src
