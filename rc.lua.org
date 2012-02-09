@@ -297,6 +297,14 @@ spawnkey = { modkey, "Control" }
                  awful.util.spawn("sudo /usr/sbin/pm-hibernate")
               end
 
+  gnome_power_off = function ()
+                  awful.util.spawn("gnome-session-quit --power-off")
+               end
+
+  gnome_quit = function ()
+                  awful.util.spawn("gnome-session-quit")
+               end
+
   displaymenu =  { "display", {
                       { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
                       { "standart", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } } }
@@ -309,7 +317,8 @@ spawnkey = { modkey, "Control" }
         ( (hostname == "acer") and displaymenu or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
         { "restart", awesome.restart },
-        { "quit", awesome.quit }
+        { "quit", gnome_quit },
+        { "halt", gnome_power_off }
      }
 
   mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -754,8 +763,9 @@ spawnkey = { modkey, "Control" }
 
   awful.key({ modkey, "Shift"   }, "q", function ()
                                            awful.menu({
-                                                         items = { { "yes", awesome.quit },
+                                                         items = { { "yes", gnome_quit },
                                                                    { "no", function () end },
+                                                                   { "halt/reboot", gnome_power_off },
                                                                    { "hibernate", hibernate },
                                                                    { "restart", awesome.restart } }
                                                       }):show({ keygrabber = true })
