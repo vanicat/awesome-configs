@@ -1066,8 +1066,6 @@ spawnkey = { modkey, "Control" }
           . ~/.keychain/$(hostname)-sh
     fi
 
-    eval $(dbus-launch --sh-syntax)
-    export DBUS_SESSION_BUS_PID
 
     if [ -d /usr/lib/vdpau/ ]; then
         export LD_LIBRARY_PATH=/usr/lib/vdpau/
@@ -1080,13 +1078,9 @@ spawnkey = { modkey, "Control" }
 
     /usr/bin/wmname compiz &
 
-    if [ `hostname` = "corbeau" ]; then
-        /usr/bin/pidgin &
-        /usr/bin/abraca &
-        /home/moi/bin/xmms-gtk-rater &
-        /usr/bin/xcompmgr &
-        /usr/bin/cairo-dock -c &
-    elif [ `hostname` = "toubib" ]; then
+    if [ `hostname` = "toubib" ]; then
+        eval $(dbus-launch --sh-syntax)
+        export DBUS_SESSION_BUS_PID
         pulseaudio --daemonize
         aumix -L
         /usr/bin/gnome-settings-daemon &
