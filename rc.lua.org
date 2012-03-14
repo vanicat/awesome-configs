@@ -764,8 +764,7 @@ spawnkey = { modkey, "Control" }
                                            awful.menu({
                                                          items = { { "yes", gnome_quit },
                                                                    { "no", function () end },
-                                                                   { "halt/reboot", gnome_power_off },
-                                                                   { "hibernate", hibernate },
+                                                                   { "halt/reboot/hibernate", gnome_power_off },
                                                                    { "restart", awesome.restart } }
                                                       }):show({ keygrabber = true })
                                         end ),
