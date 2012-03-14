@@ -38,7 +38,6 @@
   end
 #+end_src
 
-
 * Variable definitions
   :PROPERTIES:
   :ID:       0add4973-4698-400c-9e45-ee19ebad07e5
