@@ -91,10 +91,12 @@
   else
      filemanager = "thunar"
   end
-  if true then
+  if false then
      webbrowser = "/home/moi/bin/mychrome"
+     webbrowser_class = "Chromium"
   else
      webbrowser = "iceweasel"
+     webbrowser_class = "Iceweasel"
   end
   editor = emacs
   editor_cmd = emacs
@@ -316,8 +318,8 @@ spawnkey = { modkey, "Control" }
         ( (hostname == "acer") and displaymenu or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
         { "restart", awesome.restart },
-        { "quit", gnome_quit },
-        { "halt", gnome_power_off }
+        { "close session", gnome_quit },
+        { "reboot/halt/hibernate", gnome_power_off }
      }
 
   mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -642,8 +644,8 @@ spawnkey = { modkey, "Control" }
   key_run_or_raise({}, "XF86Music",      "miro",                       { class = "Miro.real" }),
   key_run_or_raise({}, "XF86Tools",      "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
   key_run_or_raise(spawnkey, "v",        "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
-  key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = "Chromium" }),
-  key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = "Chromium" }),
+  key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = webbrowser_class }),
+  key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = webbrowser_class }),
   key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
   key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
 #+end_src lua
@@ -901,6 +903,8 @@ spawnkey = { modkey, "Control" }
                        focus = true,
                        keys = clientkeys,
                        buttons = clientbuttons } },
+      { rule = { class = "Iceweasel", instance = "Navigator" },
+        properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "Chromium-browser" },
         properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "Chromium" },
@@ -933,11 +937,11 @@ spawnkey = { modkey, "Control" }
         properties = { focusable = false } },
   }
 #+end_src lua
-** Black magick for chromium on both screen
+** Black magick for chromium or iceweasel on both screen
 #+BEGIN_SRC lua :tangle myconf.lua
-  function select_chromium(tag)
+  function select_browser(tag)
      local clients = client.get()
-     local properties = { class = "Chromium" }
+     local properties = { class = webbrowser_class }
 
      if(tag_by_name["net"][fst_screen].selected) then
         ntag = tag_by_name["net"][fst_screen]
@@ -956,7 +960,7 @@ spawnkey = { modkey, "Control" }
 
   if not(fst_screen == snd_screen) then
      for s = fst_screen, snd_screen do
-        tag_by_name["net"][s]:add_signal("property::selected",select_chromium)
+        tag_by_name["net"][s]:add_signal("property::selected",select_browser)
      end
   end
 #+END_SRC
@@ -1079,7 +1083,7 @@ spawnkey = { modkey, "Control" }
         aumix -L
         /usr/bin/gnome-settings-daemon &
         /usr/lib/at-spi/at-spi-registryd &
-        /home/moi/bin/mychrome &
+        iceweasel
         tmux new-session -d "offlineimap -a Gmail,Laposte"
         /usr/bin/xmms2-launcher &
         /usr/bin/abraca &
