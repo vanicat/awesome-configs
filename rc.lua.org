@@ -562,13 +562,17 @@ spawnkey = { modkey, "Control" }
      :ID:       fad85da4-1e99-42fa-bc7d-ffdc56f7f78a
      :END:
 #+begin_src lua :tangle myconf.lua
+  leftbox = { }
+  if s == 1 then
+     table.insert(leftbox, mylauncher)
+  end
+  table.insert(leftbox, mytaglist[s])
+  table.insert(leftbox, mypromptbox[s])
+  leftbox.layout = awful.widget.layout.horizontal.leftright
+
   mywibox[s].widgets = {
-     {
-        mylauncher,
-        mytaglist[s],
-        mypromptbox[s],
-        layout = awful.widget.layout.horizontal.leftright
-     },
+     leftbox,
+     s == screen.count() and s ~= 1 and mylauncher or nil,
      mylayoutbox[s],
      myneedreboot,
      mytextclock,
