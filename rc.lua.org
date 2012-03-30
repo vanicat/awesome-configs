@@ -292,10 +292,25 @@ spawnkey = { modkey, "Control" }
    :END:
 #+begin_src lua :tangle myconf.lua
   hibernate = function ()
-                 if hostname == "acer" then
-                    awful.util.spawn("xscreensaver-command -lock")
+                 if hostname == "corbeau" or hostname == "gobelin" then
+                    if hostname == "gobelin" then
+                       awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+                    end
+                    awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
+                 else
+                    awful.util.spawn("sudo /usr/sbin/pm-hibernate")
                  end
-                 awful.util.spawn("sudo /usr/sbin/pm-hibernate")
+              end
+
+  suspend = function ()
+                 if hostname == "corbeau" or hostname == "gobelin" then
+                    if hostname == "gobelin" then
+                       awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+                    end
+                    awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+                 else
+                    awful.util.spawn("sudo /usr/sbin/pm-suspend")
+                 end
               end
 
   gnome_power_off = function ()
@@ -303,8 +318,15 @@ spawnkey = { modkey, "Control" }
                end
 
   gnome_quit = function ()
-                  awful.util.spawn("gnome-session-quit")
+                  awful.util.spawn("gnome-session-quit --no-prompt --logout")
                end
+
+  quit_menu ={ { "yes", gnome_quit },
+               { "no", function () end },
+               { "hibernate", hibernate },
+               { "suspend", suspend },
+               { "halt", gnome_power_off },
+               { "restart", awesome.restart } }
 
   displaymenu =  { "display", {
                       { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
@@ -314,12 +336,9 @@ spawnkey = { modkey, "Control" }
      {
         { "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
-        { "hibernate", hibernate },
+        { "quit...", quit_menu },
         ( (hostname == "acer") and displaymenu or
           { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
-        { "restart", awesome.restart },
-        { "close session", gnome_quit },
-        { "reboot/halt/hibernate", gnome_power_off }
      }
 
   mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
@@ -767,13 +786,9 @@ spawnkey = { modkey, "Control" }
   awful.key({ modkey, "Control" }, "r", awesome.restart),
 
   awful.key({ modkey, "Shift"   }, "q", function ()
-                                           awful.menu({
-                                                         items = { { "yes", gnome_quit },
-                                                                   { "no", function () end },
-                                                                   { "halt/reboot/hibernate", gnome_power_off },
-                                                                   { "restart", awesome.restart } }
-                                                      }):show({ keygrabber = true })
+                                           awful.menu({ items = quit_menu }):show({ keygrabber = true })
                                         end ),
+
 #+end_src lua
 *** Prompt
     :PROPERTIES:
