@@ -86,7 +86,7 @@
 #+begin_src lua :tangle myconf.lua
   terminal = "x-terminal-emulator"
   emacs = "myemacs-n2"
-  if hostname == "corbeau" then
+  if hostname == "corbeau" or hostname == "gobelin" then
     filemanager = "nautilus"
   else
      filemanager = "thunar"
