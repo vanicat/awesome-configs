@@ -1102,14 +1102,13 @@ spawnkey = { modkey, "Control" }
         aumix -L
         /usr/bin/gnome-settings-daemon &
         /usr/lib/at-spi/at-spi-registryd &
-        iceweasel
+        iceweasel &
         tmux new-session -d "offlineimap -a Gmail,Laposte"
-        /usr/bin/xmms2-launcher &
+        /usr/bin/miro &
+        /usr/bin/transmission &
+        /usr/bin/xmms2-launcher
         /usr/bin/abraca &
         /home/moi/bin/xmms-gtk-rater &
-        /usr/bin/miro &
-        /home/moi/bin/podcast-reader &
-        /usr/bin/transmission &
     fi
   #+end_src
 
