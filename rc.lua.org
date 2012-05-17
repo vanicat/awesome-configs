@@ -1069,9 +1069,8 @@ spawnkey = { modkey, "Control" }
     fi
 
     if [ $(hostname) = "corbeau" ]; then
-        xrandr --output DVI-1 --rotate left
-        xrandr --output DVI-0 --auto
-        xrandr --output DVI-0 --left-of DVI-1
+        xrandr --output DFP9 --rotate left
+        xrandr --output DFP9 --left-of DFP10
     fi
 
     if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
