@@ -925,11 +925,11 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "Calibre", instance = "calibre" },
         properties = { tag = ((hostname == "corbeau") and tag_by_name["te"][snd_screen]) or tag_by_name["pl"][1] } },
       { rule = { class = "Iceweasel", instance = "Navigator" },
-        properties = { tag = tag_by_name["net"][1] } },
+        properties = { tag = tag_by_name["net"][snd_screen] } },
       { rule = { class = "Chromium-browser" },
-        properties = { tag = tag_by_name["net"][1] } },
+        properties = { tag = tag_by_name["net"][snd_screen] } },
       { rule = { class = "Chromium" },
-        properties = { tag = tag_by_name["net"][1] } },
+        properties = { tag = tag_by_name["net"][snd_screen] } },
       { rule = { class = "MPlayer" },
         properties = { floating = true } },
       { rule = { class = "pinentry" },
@@ -937,23 +937,23 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "gimp" },
         properties = { floating = true } },
       { rule = { class = "Emacs" },
-        properties = { tag = tag_by_name["em"][1] } },
+        properties = { tag = tag_by_name["em"][snd_screen] } },
       { rule = { class = "Miro.real"},
         properties = { tag = tag_by_name["pl"][snd_screen] } },
       { rule = { instance = "gajim.py" },
-        properties = { tag = tag_by_name["IM"][1] } },
+        properties = { tag = tag_by_name["IM"][snd_screen] } },
       { rule = { class = "Transmission" },
-        properties = { tag = tag_by_name["sup2"][1] } },
+        properties = { tag = tag_by_name["sup2"][snd_screen] } },
       { rule = { instance = "xmms-gtk-rater" },
-        properties = { tag = tag_by_name["pl"][snd_screen] } },
+        properties = { tag = tag_by_name["pl"][fst_screen] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
-        properties = { tag = tag_by_name["pl"][snd_screen] } },
+        properties = { tag = tag_by_name["pl"][fst_screen] } },
       { rule = { class = "Pidgin" },
-        properties = { tag = tag_by_name["IM"][1] } },
+        properties = { tag = tag_by_name["IM"][snd_screen] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
   }
@@ -1071,9 +1071,8 @@ spawnkey = { modkey, "Control" }
     fi
 
     if [ $(hostname) = "corbeau" ]; then
-        xrandr --output DVI-1 --rotate left
-        xrandr --output DVI-0 --auto
-        xrandr --output DVI-0 --left-of DVI-1
+        xrandr --output DFP9 --rotate left
+        xrandr --output DFP9 --left-of DFP10
     fi
 
     if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
