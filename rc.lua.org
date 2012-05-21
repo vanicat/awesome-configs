@@ -922,6 +922,8 @@ spawnkey = { modkey, "Control" }
                        focus = true,
                        keys = clientkeys,
                        buttons = clientbuttons } },
+      { rule = { class = "Calibre", instance = "calibre" },
+        properties = { tag = ((hostname == "corbeau") and tag_by_name["te"][snd_screen]) or tag_by_name["pl"][1] } },
       { rule = { class = "Iceweasel", instance = "Navigator" },
         properties = { tag = tag_by_name["net"][1] } },
       { rule = { class = "Chromium-browser" },
