@@ -962,10 +962,10 @@ spawnkey = { modkey, "Control" }
      local clients = client.get()
      local properties = { class = webbrowser_class }
 
-     if(tag_by_name["net"][fst_screen].selected) then
-        ntag = tag_by_name["net"][fst_screen]
-     elseif (tag_by_name["net"][snd_screen].selected) then
+     if(tag_by_name["net"][snd_screen].selected) then
         ntag = tag_by_name["net"][snd_screen]
+     elseif (tag_by_name["net"][fst_screen].selected) then
+        ntag = tag_by_name["net"][fst_screen]
      else
         return nil
      end
