@@ -321,12 +321,23 @@ spawnkey = { modkey, "Control" }
                   awful.util.spawn("gnome-session-quit --no-prompt --logout")
                end
 
-  quit_menu ={ { "yes", gnome_quit },
-               { "no", function () end },
-               { "hibernate", hibernate },
-               { "suspend", suspend },
-               { "halt", gnome_power_off },
-               { "restart", awesome.restart } }
+  quit_menu_gnome = { { "yes", gnome_quit },
+                      { "no", function () end },
+                      { "hibernate", hibernate },
+                      { "suspend", suspend },
+                      { "halt", gnome_power_off },
+                      { "restart", awesome.restart } }
+
+  quit_menu_std = { { "yes", awesome.quit },
+                    { "no", function () end },
+                    { "hibernate", hibernate },
+                    { "restart", awesome.restart } }
+
+  if hostname == "toubib" then
+     quit_menu = quit_menu_std
+  else
+     quit_menu = quit_menu_gnome
+  end
 
   displaymenu =  { "display", {
                       { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
