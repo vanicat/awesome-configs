@@ -593,7 +593,7 @@ spawnkey = { modkey, "Control" }
      :END:
 #+begin_src lua :tangle myconf.lua
   leftbox = { }
-  if s == 1 then
+  if s == screen.count() then
      table.insert(leftbox, mylauncher)
   end
   table.insert(leftbox, mytaglist[s])
@@ -602,14 +602,14 @@ spawnkey = { modkey, "Control" }
 
   mywibox[s].widgets = {
      leftbox,
-     s == screen.count() and s ~= 1 and mylauncher or nil,
+     s ~= screen.count() and s == 1 and mylauncher or nil,
      mylayoutbox[s],
      myneedreboot,
      mytextclock,
      cpuwidget.widget,
      memwidget.widget,
      tempwidget.widget,
-     s == screen.count() and mysystray or nil,
+     s == 1 and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
   }
@@ -1083,7 +1083,7 @@ spawnkey = { modkey, "Control" }
 
     if [ $(hostname) = "corbeau" ]; then
         xrandr --output DFP9 --rotate left
-        xrandr --output DFP9 --left-of DFP10
+        xrandr --output DFP10 --left-of DFP9
     fi
 
     if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
