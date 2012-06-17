@@ -135,6 +135,22 @@ spawnkey = { modkey, "Control" }
   }
 #+end_src lua
 
+** Screens
+   #+name: screen
+   #+begin_src lua :tangle myconf.lua
+     if screen.count() ~= 1 then
+        left_screen = 1
+        right_screen = screen.count()
+        main_screen = left_screen
+        secondary_screen = right_screen
+     else
+        left_screen = 1
+        right_screen = 1
+        main_screen = left_screen
+        secondary_screen = right_screen
+     end
+   #+end_src
+
 * Some useful function
   :PROPERTIES:
   :ID:       3453864d-2cd2-40f7-8569-ea43013cd6a7
@@ -242,9 +258,10 @@ spawnkey = { modkey, "Control" }
      { name = "net", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
      { name = "pl", tag_conf = { layout = default_layout, mfact = 0.5 }},
      { name = "fm", tag_conf = { layout = default_layout, mfact = 0.5 }},
-     { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = screen.count() },
+     { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
      { name = "sup1", tag_conf = { layout = default_layout, mfact = 0.5 }},
-     { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = 1 },
+     { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = main_screen },
+     { name = "cal", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
   }
 #+end_src lua
 ** Define a tag table which hold all screen tags.
@@ -593,7 +610,7 @@ spawnkey = { modkey, "Control" }
      :END:
 #+begin_src lua :tangle myconf.lua
   leftbox = { }
-  if s == screen.count() then
+  if s == left_screen then
      table.insert(leftbox, mylauncher)
   end
   table.insert(leftbox, mytaglist[s])
@@ -602,14 +619,14 @@ spawnkey = { modkey, "Control" }
 
   mywibox[s].widgets = {
      leftbox,
-     s ~= screen.count() and s == 1 and mylauncher or nil,
+     s ~= left_screen and s == right_screen and mylauncher or nil,
      mylayoutbox[s],
      myneedreboot,
      mytextclock,
      cpuwidget.widget,
      memwidget.widget,
      tempwidget.widget,
-     s == 1 and mysystray or nil,
+     s == secondary_screen and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
   }
@@ -923,8 +940,6 @@ spawnkey = { modkey, "Control" }
   :ID:       37b2ee4a-691f-4385-9e37-c8c0d220c3b8
   :END:
 #+begin_src lua :tangle myconf.lua
-  fst_screen=1
-  snd_screen=screen.count()
   awful.rules.rules = {
       -- All clients will match this rule.
       { rule = { },
@@ -934,13 +949,13 @@ spawnkey = { modkey, "Control" }
                        keys = clientkeys,
                        buttons = clientbuttons } },
       { rule = { class = "Calibre", instance = "calibre" },
-        properties = { tag = ((hostname == "corbeau") and tag_by_name["te"][snd_screen]) or tag_by_name["pl"][1] } },
+        properties = { tag = ((hostname == "corbeau") and tag_by_name["cal"][secondary_screen]) or tag_by_name["pl"][1] } },
       { rule = { class = "Iceweasel", instance = "Navigator" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "Chromium-browser" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "Chromium" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "MPlayer" },
         properties = { floating = true } },
       { rule = { class = "pinentry" },
@@ -948,23 +963,23 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "gimp" },
         properties = { floating = true } },
       { rule = { class = "Emacs" },
-        properties = { tag = tag_by_name["em"][snd_screen] } },
+        properties = { tag = tag_by_name["em"][main_screen] } },
       { rule = { class = "Miro.real"},
-        properties = { tag = tag_by_name["pl"][snd_screen] } },
+        properties = { tag = tag_by_name["pl"][main_screen] } },
       { rule = { instance = "gajim.py" },
-        properties = { tag = tag_by_name["IM"][snd_screen] } },
+        properties = { tag = tag_by_name["IM"][secondary_screen] } },
       { rule = { class = "Transmission" },
-        properties = { tag = tag_by_name["sup2"][snd_screen] } },
+        properties = { tag = tag_by_name["sup2"][main_screen] } },
       { rule = { instance = "xmms-gtk-rater" },
-        properties = { tag = tag_by_name["pl"][fst_screen] } },
+        properties = { tag = tag_by_name["pl"][secondary_screen] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
-        properties = { tag = tag_by_name["pl"][fst_screen] } },
+        properties = { tag = tag_by_name["pl"][secondary_screen] } },
       { rule = { class = "Pidgin" },
-        properties = { tag = tag_by_name["IM"][snd_screen] } },
+        properties = { tag = tag_by_name["IM"][secondary_screen] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
   }
@@ -975,10 +990,10 @@ spawnkey = { modkey, "Control" }
      local clients = client.get()
      local properties = { class = webbrowser_class }
 
-     if(tag_by_name["net"][snd_screen].selected) then
-        ntag = tag_by_name["net"][snd_screen]
-     elseif (tag_by_name["net"][fst_screen].selected) then
-        ntag = tag_by_name["net"][fst_screen]
+     if(tag_by_name["net"][main_screen].selected) then
+        ntag = tag_by_name["net"][main_screen]
+     elseif (tag_by_name["net"][secondary_screen].selected) then
+        ntag = tag_by_name["net"][secondary_screen]
      else
         return nil
      end
@@ -990,8 +1005,8 @@ spawnkey = { modkey, "Control" }
      end
   end
 
-  if not(fst_screen == snd_screen) then
-     for s = fst_screen, snd_screen do
+  if not(main_screen == secondary_screen) then
+     for s = main_screen, secondary_screen do
         tag_by_name["net"][s]:add_signal("property::selected",select_browser)
      end
   end
