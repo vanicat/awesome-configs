@@ -661,6 +661,34 @@ spawnkey = { modkey, "Control" }
      return awful.key(mod, key, function () run_or_raise(cmd, prop) end)
   end
 #+end_src lua
+*** Change screen relatively to current screen
+    #+name: screen_relative_change
+    #+begin_src lua :tangle myconf.lua
+      function screen_focus_relative_right()
+         if client.focus and client.focus.screen then
+            if client.focus.screen < screen.count() then
+               awful.screen.focus(client.focus.screen + 1)
+            else
+               awful.screen.focus(1)
+            end
+         else
+            awful.screen.focus_relative( 1)
+         end
+      end
+
+      function screen_focus_relative_left()
+         if client.focus and client.focus.screen then
+            if client.focus.screen > 1 then
+               awful.screen.focus(client.focus.screen - 1)
+            else
+               awful.screen.focus(screen.count())
+            end
+         else
+            awful.screen.focus_relative(-1)
+         end
+      end
+    #+end_src
+
 ** the global keys
    :PROPERTIES:
    :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
@@ -712,19 +740,19 @@ spawnkey = { modkey, "Control" }
 **** The same but for the other screen
 #+begin_src lua :tangle myconf.lua
   awful.key({ modkey, "Control" }, "Left", function ()
-                                              awful.screen.focus_relative( 1 )
+                                              screen_focus_relative_right()
                                               awful.tag.viewprev()
-                                              awful.screen.focus_relative( -1 )
+                                              screen_focus_relative_left()
                                            end),
   awful.key({ modkey, "Control" }, "Right", function ()
-                                               awful.screen.focus_relative( 1 )
+                                               screen_focus_relative_right()
                                                awful.tag.viewnext()
-                                               awful.screen.focus_relative( -1 )
+                                               screen_focus_relative_left()
                                             end),
   awful.key({ modkey, "Control" }, "Escape", function ()
-                                                awful.screen.focus_relative( 1 )
+                                                screen_focus_relative_right()
                                                 awful.tag.history.restore()
-                                                awful.screen.focus_relative( -1 )
+                                                screen_focus_relative_left()
                                              end),
 #+end_src lua
 *** Changing focus
@@ -791,11 +819,11 @@ spawnkey = { modkey, "Control" }
   awful.key({ modkey, "Shift"   }, "n", function () awful.client.swap.byidx(  1)    end),
   awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
   awful.key({ modkey, "Shift"   }, "p", function () awful.client.swap.byidx( -1)    end),
-  awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Control" }, "n", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Shift"   }, "Tab", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
-  awful.key({ modkey, "Control" }, "p", function () awful.screen.focus_relative(-1) end),
+  awful.key({ modkey, "Control" }, "j",   screen_focus_relative_right),
+  awful.key({ modkey, "Control" }, "n",   screen_focus_relative_right),
+  awful.key({ modkey, "Shift"   }, "Tab", screen_focus_relative_right),
+  awful.key({ modkey, "Control" }, "k",   screen_focus_relative_left),
+  awful.key({ modkey, "Control" }, "p",   screen_focus_relative_left),
 
   awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
   awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
@@ -894,12 +922,12 @@ spawnkey = { modkey, "Control" }
                     end),
           awful.key({ modkey, "Control" }, "#" .. i + 9,
                     function ()
-                          awful.screen.focus_relative( 1 )
+                          screen_focus_relative_right()
                           local screen = mouse.screen
                           if tags[screen][i] then
                               awful.tag.viewonly(tags[screen][i])
                           end
-                          awful.screen.focus_relative( -1 )
+                          screen_focus_relative_left()
                     end),
           awful.key({ modkey, "Shift" }, "#" .. i + 9,
                     function ()
