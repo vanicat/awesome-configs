@@ -136,6 +136,22 @@ spawnkey = { modkey, "Control" }
   }
 #+end_src lua
 
+** Screens
+   #+name: screen
+   #+begin_src lua :tangle myconf.lua
+     if screen.count() ~= 1 then
+        left_screen = 1
+        right_screen = screen.count()
+        main_screen = left_screen
+        secondary_screen = right_screen
+     else
+        left_screen = 1
+        right_screen = 1
+        main_screen = left_screen
+        secondary_screen = right_screen
+     end
+   #+end_src
+
 * Some useful function
   :PROPERTIES:
   :ID:       3453864d-2cd2-40f7-8569-ea43013cd6a7
@@ -243,9 +259,10 @@ spawnkey = { modkey, "Control" }
      { name = "net", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
      { name = "pl", tag_conf = { layout = default_layout, mfact = 0.5 }},
      { name = "fm", tag_conf = { layout = default_layout, mfact = 0.5 }},
-     { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = screen.count() },
+     { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
      { name = "sup1", tag_conf = { layout = default_layout, mfact = 0.5 }},
-     { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = 1 },
+     { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = main_screen },
+     { name = "cal", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
   }
 #+end_src lua
 ** Define a tag table which hold all screen tags.
@@ -585,7 +602,7 @@ spawnkey = { modkey, "Control" }
      :END:
 #+begin_src lua :tangle myconf.lua
   leftbox = { }
-  if s == 1 then
+  if s == left_screen then
      table.insert(leftbox, mylauncher)
   end
   table.insert(leftbox, mytaglist[s])
@@ -594,13 +611,14 @@ spawnkey = { modkey, "Control" }
 
   mywibox[s].widgets = {
      leftbox,
-     s == screen.count() and s ~= 1 and mylauncher or nil,
+     s ~= left_screen and s == right_screen and mylauncher or nil,
      mylayoutbox[s],
      myneedreboot,
      mytextclock,
      cpuwidget.widget,
      memwidget.widget,
-     s == screen.count() and mysystray or nil,
+     tempwidget.widget,
+     s == secondary_screen and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
   }
@@ -635,6 +653,34 @@ spawnkey = { modkey, "Control" }
      return awful.key(mod, key, function () run_or_raise(cmd, prop) end)
   end
 #+end_src lua
+*** Change screen relatively to current screen
+    #+name: screen_relative_change
+    #+begin_src lua :tangle myconf.lua
+      function screen_focus_relative_right()
+         if client.focus and client.focus.screen then
+            if client.focus.screen < screen.count() then
+               awful.screen.focus(client.focus.screen + 1)
+            else
+               awful.screen.focus(1)
+            end
+         else
+            awful.screen.focus_relative( 1)
+         end
+      end
+
+      function screen_focus_relative_left()
+         if client.focus and client.focus.screen then
+            if client.focus.screen > 1 then
+               awful.screen.focus(client.focus.screen - 1)
+            else
+               awful.screen.focus(screen.count())
+            end
+         else
+            awful.screen.focus_relative(-1)
+         end
+      end
+    #+end_src
+
 ** the global keys
    :PROPERTIES:
    :ID:       d3b31a39-4dad-47b2-970a-182a761db4b0
@@ -686,19 +732,19 @@ spawnkey = { modkey, "Control" }
 **** The same but for the other screen
 #+begin_src lua :tangle myconf.lua
   awful.key({ modkey, "Control" }, "Left", function ()
-                                              awful.screen.focus_relative( 1 )
+                                              screen_focus_relative_right()
                                               awful.tag.viewprev()
-                                              awful.screen.focus_relative( -1 )
+                                              screen_focus_relative_left()
                                            end),
   awful.key({ modkey, "Control" }, "Right", function ()
-                                               awful.screen.focus_relative( 1 )
+                                               screen_focus_relative_right()
                                                awful.tag.viewnext()
-                                               awful.screen.focus_relative( -1 )
+                                               screen_focus_relative_left()
                                             end),
   awful.key({ modkey, "Control" }, "Escape", function ()
-                                                awful.screen.focus_relative( 1 )
+                                                screen_focus_relative_right()
                                                 awful.tag.history.restore()
-                                                awful.screen.focus_relative( -1 )
+                                                screen_focus_relative_left()
                                              end),
 #+end_src lua
 *** Changing focus
@@ -765,11 +811,11 @@ spawnkey = { modkey, "Control" }
   awful.key({ modkey, "Shift"   }, "n", function () awful.client.swap.byidx(  1)    end),
   awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
   awful.key({ modkey, "Shift"   }, "p", function () awful.client.swap.byidx( -1)    end),
-  awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Control" }, "n", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Shift"   }, "Tab", function () awful.screen.focus_relative( 1) end),
-  awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
-  awful.key({ modkey, "Control" }, "p", function () awful.screen.focus_relative(-1) end),
+  awful.key({ modkey, "Control" }, "j",   screen_focus_relative_right),
+  awful.key({ modkey, "Control" }, "n",   screen_focus_relative_right),
+  awful.key({ modkey, "Shift"   }, "Tab", screen_focus_relative_right),
+  awful.key({ modkey, "Control" }, "k",   screen_focus_relative_left),
+  awful.key({ modkey, "Control" }, "p",   screen_focus_relative_left),
 
   awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
   awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
@@ -868,12 +914,12 @@ spawnkey = { modkey, "Control" }
                     end),
           awful.key({ modkey, "Control" }, "#" .. i + 9,
                     function ()
-                          awful.screen.focus_relative( 1 )
+                          screen_focus_relative_right()
                           local screen = mouse.screen
                           if tags[screen][i] then
                               awful.tag.viewonly(tags[screen][i])
                           end
-                          awful.screen.focus_relative( -1 )
+                          screen_focus_relative_left()
                     end),
           awful.key({ modkey, "Shift" }, "#" .. i + 9,
                     function ()
@@ -914,8 +960,6 @@ spawnkey = { modkey, "Control" }
   :ID:       37b2ee4a-691f-4385-9e37-c8c0d220c3b8
   :END:
 #+begin_src lua :tangle myconf.lua
-  fst_screen=1
-  snd_screen=screen.count()
   awful.rules.rules = {
       -- All clients will match this rule.
       { rule = { },
@@ -924,14 +968,14 @@ spawnkey = { modkey, "Control" }
                        focus = true,
                        keys = clientkeys,
                        buttons = clientbuttons } },
-      { rule = { class = "Calibre", instance = "calibre" },
-        properties = { tag = ((hostname == "corbeau") and tag_by_name["te"][snd_screen]) or tag_by_name["pl"][1] } },
+      { rule = { class = "Calibre-gui", instance = "calibre-gui" },
+        properties = { tag = tag_by_name["cal"][secondary_screen] } },
       { rule = { class = "Iceweasel", instance = "Navigator" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "Chromium-browser" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "Chromium" },
-        properties = { tag = tag_by_name["net"][snd_screen] } },
+        properties = { tag = tag_by_name["net"][main_screen] } },
       { rule = { class = "MPlayer" },
         properties = { floating = true } },
       { rule = { class = "pinentry" },
@@ -939,23 +983,24 @@ spawnkey = { modkey, "Control" }
       { rule = { class = "gimp" },
         properties = { floating = true } },
       { rule = { class = "Emacs" },
-        properties = { tag = tag_by_name["em"][snd_screen] } },
+        properties = { tag = tag_by_name["em"][main_screen],
+                       size_hints_honor = false } },
       { rule = { class = "Miro.real"},
-        properties = { tag = tag_by_name["pl"][snd_screen] } },
+        properties = { tag = tag_by_name["pl"][main_screen] } },
       { rule = { instance = "gajim.py" },
-        properties = { tag = tag_by_name["IM"][snd_screen] } },
+        properties = { tag = tag_by_name["IM"][secondary_screen] } },
       { rule = { class = "Transmission" },
-        properties = { tag = tag_by_name["sup2"][snd_screen] } },
+        properties = { tag = tag_by_name["sup2"][main_screen] } },
       { rule = { instance = "xmms-gtk-rater" },
-        properties = { tag = tag_by_name["pl"][fst_screen] } },
+        properties = { tag = tag_by_name["pl"][secondary_screen] } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true } },
       { rule = { instance = "cairo-dock" },
         properties = { ontop = true, focusable = false } },
       { rule = { instance = "abraca" },
-        properties = { tag = tag_by_name["pl"][fst_screen] } },
+        properties = { tag = tag_by_name["pl"][secondary_screen] } },
       { rule = { class = "Pidgin" },
-        properties = { tag = tag_by_name["IM"][snd_screen] } },
+        properties = { tag = tag_by_name["IM"][secondary_screen] } },
       { rule = { instance = "x-nautilus-desktop" },
         properties = { focusable = false } },
   }
@@ -966,10 +1011,10 @@ spawnkey = { modkey, "Control" }
      local clients = client.get()
      local properties = { class = webbrowser_class }
 
-     if(tag_by_name["net"][snd_screen].selected) then
-        ntag = tag_by_name["net"][snd_screen]
-     elseif (tag_by_name["net"][fst_screen].selected) then
-        ntag = tag_by_name["net"][fst_screen]
+     if(tag_by_name["net"][main_screen].selected) then
+        ntag = tag_by_name["net"][main_screen]
+     elseif (tag_by_name["net"][secondary_screen].selected) then
+        ntag = tag_by_name["net"][secondary_screen]
      else
         return nil
      end
@@ -981,8 +1026,8 @@ spawnkey = { modkey, "Control" }
      end
   end
 
-  if not(fst_screen == snd_screen) then
-     for s = fst_screen, snd_screen do
+  if not(main_screen == secondary_screen) then
+     for s = main_screen, secondary_screen do
         tag_by_name["net"][s]:add_signal("property::selected",select_browser)
      end
   end
@@ -1074,7 +1119,7 @@ spawnkey = { modkey, "Control" }
 
     if [ $(hostname) = "corbeau" ]; then
         xrandr --output DFP9 --rotate left
-        xrandr --output DFP9 --left-of DFP10
+        xrandr --output DFP10 --left-of DFP9
     fi
 
     if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
