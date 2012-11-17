@@ -667,7 +667,7 @@ spawnkey = { modkey, "Control" }
 
   key_run_or_raise({}, "XF86AudioMedia", "xbmc",                       { class = "xbmc.bin" }),
   key_run_or_raise({}, "XF86Music",      "miro",                       { class = "Miro.real" }),
-  key_run_or_raise({}, "XF86Tools",      "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
+  key_run_or_raise({}, "XF86Tools",      "xbmc", { class = "xbmc.bin" }),
   key_run_or_raise(spawnkey, "v",        "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
   key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = webbrowser_class }),
   key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = webbrowser_class }),
