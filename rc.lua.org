@@ -330,6 +330,10 @@ spawnkey = { modkey, "Control" }
                  end
               end
 
+  gnome_do_logout = function ()
+                       awful.util.spawn("dbus-send --session -dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.Logout uint32:1")
+                    end
+
   gnome_power_off = function ()
                   awful.util.spawn("gnome-session-quit --power-off")
                end
