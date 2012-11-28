@@ -621,7 +621,6 @@ spawnkey = { modkey, "Control" }
      mytextclock,
      cpuwidget.widget,
      memwidget.widget,
-     tempwidget.widget,
      s == secondary_screen and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
