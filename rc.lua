@@ -356,10 +356,19 @@ memwidget:set_background_color("#494B4F")
 memwidget:set_color("#0000ff")
 memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
 -- ** Create a keyboard widget
-obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
+-- obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
 
-keywidget = obvious.keymap_switch()
+-- keywidget = obvious.keymap_switch()
 -- ** Create a keyboard widget
+-- *** The table of keymap
+keyreverse = { }
+keyreverse["fr(bepo)"] = "bépo"
+keyreverse["fr(oss)"] = "azer"
+
+keyboard_layout = { }
+keyboard_layout["bépo"]="fr(bepo)"
+keyboard_layout["azer"]="fr(oss)"
+
 -- *** The function to check the situation
 function get_current_keymap()
    local fd = io.popen("setxkbmap -print")
@@ -372,8 +381,11 @@ function get_current_keymap()
          fd:close()
          if not keymap then
             return "unknown layout"
-         else
-            return keymap:sub(2, -2)
+         else if keyreverse[keymap:sub(2, -2)] then
+               return keyreverse[keymap:sub(2, -2)]
+            else
+               return keymap:sub(2, -2)
+            end
          end
       end
    end
@@ -383,24 +395,32 @@ function get_current_keymap()
 end
 -- *** Changing configuration
 function switch_keymap(layout_string)
-   awful.util.spawn("setxkbmap \"" .. layout_string .. "\"")
-   delayed_update_once(true)
+   if keyboard_layout[layout_string] then
+      awful.util.spawn("setxkbmap \"" .. keyboard_layout[layout_string] .. "\"")
+      update_keywidget(layout_string)
+   else
+      awful.util.spawn("setxkbmap \"" .. layout_string .. "\"")
+   end
 end
 -- *** The menu
-keymenu =  awful.menu({ items =
-                        { { "bépo", function () switch_keymap "fr(bepo)" end },
-                          { "azerty", function () switch_keymap "fr(oss)" end } }
-                  }
-                )
+keymenu =  awful.menu.new({ items =
+                            { { "bépo", function () switch_keymap "bépo" end, nil },
+                              { "azerty", function () switch_keymap "azer" end, nil } }
+                      }
+                    )
 
 -- *** The widget
 keywidget = widget({ type = "textbox" })
 keywidget.text = "..."
 update_keywidget = function() keywidget.text = get_current_keymap() end
 update_keywidget()
-keywidget.buttons = { awful.button({ }, 1, function ()
-                                              displaymenu:show()
-                                           end) }
+keywidget:buttons(awful.util.table.join(
+                     awful.button({ }, 1, function ()
+                                             keymenu:show()
+                                          end),
+                     awful.button({ }, 4, awful.tag.viewnext),
+                     awful.button({ }, 5, awful.tag.viewprev)
+               ))
 
 
 awful.hooks.timer.register(120, update_keywidget)
