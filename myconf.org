@@ -1,0 +1,91 @@
+* the xsessionrc
+  #+begin_src sh :tangle ~/.xsessionrc
+    cd ~/.config/awesome/
+    make
+    cd
+
+    export EDITOR=myemacs
+    # export GDK_NATIVE_WINDOWS=1 #was for acroread
+
+    if [ ! "toubib" = `hostname` ]; then
+        export XMMS_PATH=tcp://toubib:9667
+    fi
+
+    if [ $(hostname) = "corbeau" ]; then
+        xrandr --output DFP9 --rotate left
+        xrandr --output DFP10 --left-of DFP9
+    fi
+
+    if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
+       xrandr --output default --mode 1360x768
+    fi
+
+    keychain
+    if [ -e ~/.keychain/$(hostname)-sh ]; then
+          . ~/.keychain/$(hostname)-sh
+    fi
+
+
+    if [ -d /usr/lib/vdpau/ ]; then
+        export LD_LIBRARY_PATH=/usr/lib/vdpau/
+    fi
+
+    if [ $XAUTHORITY -a -r $XAUTHORITY -a $XAUTHORITY != $HOME/.Xauthority ]; then
+        cp $XAUTHORITY $HOME/.Xauthority
+        export XAUTHORITY=$HOME/.Xauthority
+    fi
+
+    /usr/bin/wmname compiz &
+
+    if [ `hostname` = "toubib" ]; then
+        eval $(dbus-launch --sh-syntax)
+        export DBUS_SESSION_BUS_PID
+        pulseaudio --daemonize
+        aumix -L
+        /usr/bin/gnome-settings-daemon &
+        /usr/lib/at-spi/at-spi-registryd &
+        iceweasel &
+        tmux new-session -d "offlineimap -a Gmail,Laposte"
+        /usr/bin/miro &
+        /usr/bin/transmission &
+        /usr/bin/xmms2-launcher
+        /usr/bin/abraca &
+        /home/moi/bin/xmms-gtk-rater &
+    fi
+  #+end_src
+
+* System wide config
+  All this should NOT be in /usr but in /usr/local.
+** The /usr/local/share/applications/awesome.desktop
+   #+begin_src conf :tangle no
+     [Desktop Entry]
+     Version=1.0
+     Type=Application
+     Name=Awesome
+     Comment=The awesome launcher!
+     TryExec=awesome
+     Exec=awesome
+   #+end_src
+** The /etc/X11/sessions/gnome-awesome.desktop
+   #+begin_src conf :tangle no
+     [Desktop Entry]
+     Name=Awesome GNOME
+     Comment=Dynamic window manager
+     TryExec=gnome-session
+     Exec=gnome-session-awesome
+     Type=XSession
+   #+end_src
+** The /usr/local/bin/gnome-session-awesome
+   #+begin_src sh :tangle no
+     #!/bin/bash
+     exec gnome-session --session awesome "$@"
+   #+end_src
+** /usr/share/gnome-session/sessions/awesome.session
+   #+begin_src sh :tangle no
+     [GNOME Session]
+     Name=Awesome session
+     RequiredComponents=gnome-settings-daemon;
+     RequiredProviders=windowmanager;notifications;
+     DefaultProvider-windowmanager=awesome
+     DefaultProvider-notifications=notification-daemon
+   #+end_src
