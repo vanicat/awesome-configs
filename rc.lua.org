@@ -332,25 +332,29 @@ spawnkey = { modkey, "Control" }
                     end
                  end
 
-     gnome_power_off = function ()
-                     awful.util.spawn("gnome-session-quit --power-off")
-                  end
+  gnome_do_logout = function ()
+                       awful.util.spawn("dbus-send --session -dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.Logout uint32:1")
+                    end
 
-     gnome_quit = function ()
-                     awful.util.spawn("gnome-session-quit --no-prompt --logout")
-                  end
+  gnome_power_off = function ()
+                  awful.util.spawn("gnome-session-quit --power-off")
+               end
 
-     quit_menu_gnome = { { "yes", gnome_quit },
-                         { "no", function () end },
-                         { "hibernate", hibernate },
-                         { "suspend", suspend },
-                         { "halt", gnome_power_off },
-                         { "restart", awesome.restart } }
+  gnome_quit = function ()
+                  awful.util.spawn("gnome-session-quit --no-prompt --logout")
+               end
 
-     quit_menu_std = { { "yes", awesome.quit },
-                       { "no", function () end },
-                       { "hibernate", hibernate },
-                       { "restart", awesome.restart } }
+  quit_menu_gnome = { { "yes", gnome_quit },
+                      { "no", function () end },
+                      { "hibernate", hibernate },
+                      { "suspend", suspend },
+                      { "halt", gnome_power_off },
+                      { "restart", awesome.restart } }
+
+  quit_menu_std = { { "yes", awesome.quit },
+                    { "no", function () end },
+                    { "hibernate", hibernate },
+                    { "restart", awesome.restart } }
 
      if hostname == "toubib" then
         quit_menu = quit_menu_std
