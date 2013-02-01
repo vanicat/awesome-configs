@@ -308,82 +308,82 @@ spawnkey = { modkey, "Control" }
    :PROPERTIES:
    :ID:       a8a3dd0d-34d7-4103-a3ab-6600877364cb
    :END:
-#+begin_src lua :tangle myconf.lua
-  hibernate = function ()
-                 if hostname == "corbeau" or hostname == "gobelin" then
-                    if hostname == "gobelin" then
-                       awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+   #+begin_src lua :tangle myconf.lua
+     hibernate = function ()
+                    if hostname == "corbeau" or hostname == "gobelin" then
+                       if hostname == "gobelin" then
+                          awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+                       end
+                       awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
+                    else
+                       awful.util.spawn("sudo /usr/sbin/pm-hibernate")
                     end
-                    awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
-                 else
-                    awful.util.spawn("sudo /usr/sbin/pm-hibernate")
                  end
-              end
 
-  suspend = function ()
-                 if hostname == "corbeau" or hostname == "gobelin" then
-                    if hostname == "gobelin" then
-                       awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+     suspend = function ()
+                    if hostname == "corbeau" or hostname == "gobelin" then
+                       if hostname == "gobelin" then
+                          awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+                       end
+                       awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+                    else
+                       awful.util.spawn("sudo /usr/sbin/pm-suspend")
                     end
-                    awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
-                 else
-                    awful.util.spawn("sudo /usr/sbin/pm-suspend")
                  end
-              end
 
-  gnome_power_off = function ()
-                  awful.util.spawn("gnome-session-quit --power-off")
-               end
+     gnome_power_off = function ()
+                     awful.util.spawn("gnome-session-quit --power-off")
+                  end
 
-  gnome_quit = function ()
-                  awful.util.spawn("gnome-session-quit --no-prompt --logout")
-               end
+     gnome_quit = function ()
+                     awful.util.spawn("gnome-session-quit --no-prompt --logout")
+                  end
 
-  quit_menu_gnome = { { "yes", gnome_quit },
-                      { "no", function () end },
-                      { "hibernate", hibernate },
-                      { "suspend", suspend },
-                      { "halt", gnome_power_off },
-                      { "restart", awesome.restart } }
+     quit_menu_gnome = { { "yes", gnome_quit },
+                         { "no", function () end },
+                         { "hibernate", hibernate },
+                         { "suspend", suspend },
+                         { "halt", gnome_power_off },
+                         { "restart", awesome.restart } }
 
-  quit_menu_std = { { "yes", awesome.quit },
-                    { "no", function () end },
-                    { "hibernate", hibernate },
-                    { "restart", awesome.restart } }
+     quit_menu_std = { { "yes", awesome.quit },
+                       { "no", function () end },
+                       { "hibernate", hibernate },
+                       { "restart", awesome.restart } }
 
-  if hostname == "toubib" then
-     quit_menu = quit_menu_std
-  else
-     quit_menu = quit_menu_gnome
-  end
+     if hostname == "toubib" then
+        quit_menu = quit_menu_std
+     else
+        quit_menu = quit_menu_gnome
+     end
 
-  displaymenu =  { "display", {
-                      { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
-                      { "standart", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } } }
+     displaymenu =  { "display", {
+                         { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
+                         { "standart", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } } }
 
-  myawesomemenu =
-     {
-        { "manual", terminal .. " -e man awesome" },
-        { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
-        { "quit...", quit_menu },
-        ( (hostname == "acer") and displaymenu or
-          { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
-     }
+     myawesomemenu =
+        {
+           { "manual", terminal .. " -e man awesome" },
+           { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
+           { "quit...", quit_menu },
+           ( (hostname == "acer") and displaymenu or
+             { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
+        }
 
-  mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                      { "open terminal", terminal },
-                                      { "open emacs", "emacs" },
-                                      { "open file manager", filemanager },
-                                      { "open webbrowser", webbrowser },
-                                      { "windows" , function () awful.menu.clients({ width=250 }) end},
-                                      { "Debian", debian.menu.Debian_menu.Debian },
-                                      { "App", freedesktop.menu.new() },
-                                   }
-                         })
+     mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                         { "open terminal", terminal },
+                                         { "open emacs", "emacs" },
+                                         { "open file manager", filemanager },
+                                         { "open webbrowser", webbrowser },
+                                         { "windows" , function () awful.menu.clients({ width=250 }) end},
+                                         { "Debian", debian.menu.Debian_menu.Debian },
+                                         { "App", freedesktop.menu.new() },
+                                      }
+                            })
 
-  mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
-                                       menu = mymainmenu })
-#+end_src lua
+     mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+                                          menu = mymainmenu })
+   #+end_src lua
 
 * Wibox
 ** Create a textclock widget
