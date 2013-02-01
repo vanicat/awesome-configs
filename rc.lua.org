@@ -14,6 +14,7 @@
   require('freedesktop.utils')
   require("obvious.cpu")
   require("obvious.mem")
+  require("obvious.keymap_switch")
 #+end_src lua
 * errors checking
 #+begin_src lua :tangle myconf.lua
@@ -450,6 +451,70 @@ spawnkey = { modkey, "Control" }
   memwidget:set_color("#0000ff")
   memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
 #+end_src lua
+** Create a keyboard widget
+   #+name: key-obvious
+   #+begin_src lua :tangle myconf.lua
+     obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
+
+     keywidget = obvious.keymap_switch()
+   #+end_src
+** Create a keyboard widget
+*** The function to check the situation
+  #+begin_src lua
+    function get_current_keymap()
+        local fd = io.popen("setxkbmap -print")
+        if not fd then return end
+
+        for line in fd:lines() do
+            if line:match("xkb_symbols") then
+                local keymap = line:match("\+[^+]*\+")
+
+                fd:close()
+                if not keymap then
+                    return "unknown layout"
+                else
+                    return keymap:sub(2, -2)
+                end
+            end
+        end
+
+        fd:close()
+        return "unknown layout"
+    end
+  #+end_src
+*** Changing configuration
+    #+name: conf-change
+    #+begin_src lua
+      function switch_keymap(layout_string)
+         awful.util.spawn("setxkbmap \"" .. layout_string .. "\"")
+         delayed_update_once(true)
+      end
+    #+end_src
+*** The menu
+    #+name: keyboard-menu
+    #+begin_src lua
+      keymenu =  awful.menu({ items =
+                              { { "bépo", function () switch_keymap "fr(bepo)" end },
+                                { "azerty", function () switch_keymap "fr(oss)" end } }
+                        }
+                      )
+    #+end_src
+
+*** The widget
+  #+begin_src lua
+    keywidget = widget({ type = "textbox" })
+    keywidget.text = "..."
+    update_keywidget = function() keywidget.text = get_current_keymap() end
+    update_keywidget()
+    keywidget.buttons = { awful.button({ }, 1, function ()
+                             displaymenu:show()
+                          end) }
+
+
+    awful.hooks.timer.register(120, update_keywidget)
+  #+end_src lua
+
+  obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
 ** Create a widget for each screen.
 *** First define array for each type of widget
     :PROPERTIES:
@@ -617,7 +682,7 @@ spawnkey = { modkey, "Control" }
      mytextclock,
      cpuwidget.widget,
      memwidget.widget,
-     tempwidget.widget,
+     keywidget,
      s == secondary_screen and mysystray or nil,
      mytasklist[s],
      layout = awful.widget.layout.horizontal.rightleft
