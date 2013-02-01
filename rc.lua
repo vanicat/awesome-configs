@@ -492,7 +492,7 @@ for s = 1, screen.count() do
 -- **** Create a promptbox for each screen
    mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
 -- **** Create an imagebox widget which will contains an icon indicating which layout we're using.
-     We need one layoutbox per screen.
+--      We need one layoutbox per screen.
    mylayoutbox[s] = awful.widget.layoutbox(s)
    mylayoutbox[s]:buttons(awful.util.table.join(
                              awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
