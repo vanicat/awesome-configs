@@ -184,23 +184,27 @@ end
 -- * Tags
 -- ** different default for different computer
 if hostname == "corbeau" then
-   term_layout = awful.layout.suit.tile
-   default_layout = awful.layout.suit.tile
+   term_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
+   full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_main_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
+   default_second_conf = { layout = awful.layout.suit.tile.bottom, mfact = 0.5 }
 else
-   term_layout = awful.layout.suit.max
-   default_layout = awful.layout.suit.max
+   term_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_main_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_second_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
 end
 -- ** the tags definition
 tags_config = {
-   { name = "te", tag_conf = { layout = term_layout, mfact = 0.5 } },
-   { name = "em", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
-   { name = "net", tag_conf = { layout = awful.layout.suit.max, mfact = 0.75 }},
-   { name = "pl", tag_conf = { layout = default_layout, mfact = 0.5 }},
-   { name = "fm", tag_conf = { layout = default_layout, mfact = 0.5 }},
-   { name = "IM", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
-   { name = "sup1", tag_conf = { layout = default_layout, mfact = 0.5 }},
-   { name = "sup2", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = main_screen },
-   { name = "cal", tag_conf = { layout = default_layout, mfact = 0.5}, only_on = secondary_screen },
+   { name = "te", tag_conf = { term_conf, default_second_conf }, },
+   { name = "em", tag_conf = { full_conf, full_conf }, },
+   { name = "net", tag_conf = { full_conf, full_conf }, },
+   { name = "pl", tag_conf = { default_main_conf, default_second_conf }, },
+   { name = "fm", tag_conf = { default_main_conf, default_second_conf }, },
+   { name = "IM", tag_conf = { default_main_conf, default_second_conf }, only_on = secondary_screen },
+   { name = "sup1", tag_conf = { default_main_conf, default_second_conf }, },
+   { name = "sup2", tag_conf = { default_main_conf, default_second_conf }, only_on = main_screen },
+   { name = "cal", tag_conf = { default_main_conf, default_second_conf }, only_on = secondary_screen },
 }
 -- ** Define a tag table which hold all screen tags.
 tags = {}
@@ -211,8 +215,8 @@ for s = 1, screen.count() do
    tags[s] = { }
    for i, t in ipairs(tags_config) do
       if not t.only_on or t.only_on == s then
-         t.tag_conf.screen = s
-         tag=awful.tag.add(t.name,t.tag_conf)
+         t.tag_conf[s].screen = s
+         tag=awful.tag.add(t.name,t.tag_conf[s])
          table.insert(tags[s],tag)
          if tag_by_name[t.name] then
             table.insert(tag_by_name[t.name],tag)
