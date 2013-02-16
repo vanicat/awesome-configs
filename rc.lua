@@ -364,10 +364,12 @@ memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
 keyreverse = { }
 keyreverse["fr(bepo)"] = "bépo"
 keyreverse["fr(oss)"] = "azer"
+keyreverse["us"] = "qwer"
 
 keyboard_layout = { }
 keyboard_layout["bépo"]="fr(bepo)"
 keyboard_layout["azer"]="fr(oss)"
+keyboard_layout["qwer"]="us"
 
 -- *** The function to check the situation
 function get_current_keymap()
@@ -405,7 +407,9 @@ end
 -- *** The menu
 keymenu =  awful.menu.new({ items =
                             { { "bépo", function () switch_keymap "bépo" end, nil },
-                              { "azerty", function () switch_keymap "azer" end, nil } }
+                              { "azerty", function () switch_keymap "azer" end, nil },
+                              { "qwerty", function () switch_keymap "us" end, nil },
+                           }
                       }
                     )
 
