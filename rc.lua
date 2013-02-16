@@ -284,18 +284,51 @@ else
    quit_menu = quit_menu_gnome
 end
 
-displaymenu =  { "display", {
-                    { "clone",    function () awful.util.spawn("/home/moi/bin/xrandr-clone") end },
-                    { "standart", function () awful.util.spawn("/home/moi/bin/xrandr-auto") end } } }
+if hostname == "corbeau" then
+   xrandr_clone_display =
+      function ()
+         awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050 --rotate normal")
+         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+      end
+
+   xrandr_std_display =
+      function ()
+         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output DFP9 --rotate left --right-of DFP10 --mode 1680x1050")
+      end
+elseif hostname == "gobelin" then
+   xrandr_clone_display =
+      function ()
+         awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050")
+         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+      end
+
+   xrandr_std_display =
+      function ()
+         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output DFP9 --right-of DFP10 --mode 1680x1050")
+      end
+end
 
 myawesomemenu =
    {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/myconf.lua" },
    { "quit...", quit_menu },
-   ( (hostname == "acer") and displaymenu or
-  { "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end }),
 }
+
+if hostname == "gobelin" or hostname == "corbeau" then
+   displaymenu =  { "display", {
+                       { "clone",    xrandr_clone_display },
+                       { "standart", xrandr_std_display   }}}
+
+   table.insert(myawesomemenu,displaymenu)
+end
+
+if hostname == "corbeau" then
+   table.insert(myawesomemenu,{ "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end })
+end
+
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
