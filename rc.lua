@@ -303,14 +303,14 @@ if hostname == "corbeau" then
 elseif hostname == "gobelin" then
    xrandr_clone_display =
       function ()
-         awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050")
-         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output VGA1 --auto --same-as LVDS1 --preferred")
+         awful.util.spawn("xrandr --output LVDS1 --auto --preferred")
       end
 
    xrandr_std_display =
       function ()
-         awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
-         awful.util.spawn("xrandr --output DFP9 --right-of DFP10 --mode 1680x1050")
+         awful.util.spawn("xrandr --output LVDS1 --auto --preferred")
+         awful.util.spawn("xrandr --output VGA1 --right-of LVDS1 --auto --preferred")
       end
 end
 
