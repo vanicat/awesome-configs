@@ -59,7 +59,7 @@ if hostname == "corbeau" or hostname == "gobelin" then
 else
    filemanager = "thunar"
 end
-if false then
+if true then
    webbrowser = "/home/moi/bin/mychrome"
    webbrowser_class = "Chromium"
 else
@@ -851,8 +851,6 @@ awful.rules.rules = {
    { rule = { class = "Calibre-gui", instance = "calibre-gui" },
      properties = { tag = tag_by_name["cal"][secondary_screen] } },
    { rule = { class = "Iceweasel", instance = "Navigator" },
-     properties = { tag = tag_by_name["net"][main_screen] } },
-   { rule = { class = "Chromium-browser" },
      properties = { tag = tag_by_name["net"][main_screen] } },
    { rule = { class = "Chromium" },
      properties = { tag = tag_by_name["net"][main_screen] } },
