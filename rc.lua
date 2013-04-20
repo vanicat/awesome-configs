@@ -849,7 +849,7 @@ awful.rules.rules = {
                     keys = clientkeys,
                     buttons = clientbuttons } },
    { rule = { class = "Calibre-gui", instance = "calibre-gui" },
-     properties = { tag = tag_by_name["cal"][secondary_screen] } },
+     properties = { tag = tag_by_name["cal"][1] } },
    { rule = { class = "Iceweasel", instance = "Navigator" },
      properties = { tag = tag_by_name["net"][main_screen] } },
    { rule = { class = "Chromium" },
