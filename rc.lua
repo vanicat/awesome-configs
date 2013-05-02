@@ -59,7 +59,7 @@ if hostname == "corbeau" or hostname == "gobelin" then
 else
    filemanager = "thunar"
 end
-if true then
+if false then
    webbrowser = "/home/moi/bin/mychrome"
    webbrowser_class = "Chromium"
 else
