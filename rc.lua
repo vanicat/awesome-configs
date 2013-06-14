@@ -237,25 +237,17 @@ freedesktop.menu.all_menu_dirs = { '/usr/share/applications/', '/usr/share/appli
 
 -- ** Create a laucher widget and a main menu
 hibernate = function ()
-               if hostname == "corbeau" or hostname == "gobelin" then
-                  if hostname == "gobelin" then
-                     awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-                  end
-                  awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
-               else
-                  awful.util.spawn("sudo /usr/sbin/pm-hibernate")
+               if hostname == "gobelin" then
+                  awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
                end
+               awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
             end
 
 suspend = function ()
-             if hostname == "corbeau" or hostname == "gobelin" then
-                if hostname == "gobelin" then
-                   awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-                end
-                awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
-             else
-                awful.util.spawn("sudo /usr/sbin/pm-suspend")
+             if hostname == "gobelin" then
+                awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
              end
+             awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
           end
 
 gnome_do_logout = function ()
@@ -270,6 +262,14 @@ gnome_quit = function ()
                 awful.util.spawn("gnome-session-quit --no-prompt --logout")
              end
 
+systemd_quit = function ()
+                  awful.util.spawn("systemctl --user start exit.target")
+               end
+
+systemd_power_off = function ()
+                      awful.util.spawn("systemctl --user stat poweroff.target")
+                   end
+
 quit_menu_gnome = { { "yes", gnome_quit },
                     { "no", function () end },
                     { "hibernate", hibernate },
@@ -277,13 +277,14 @@ quit_menu_gnome = { { "yes", gnome_quit },
                     { "halt", gnome_power_off },
                     { "restart", awesome.restart } }
 
-quit_menu_std = { { "yes", awesome.quit },
-                  { "no", function () end },
-                  { "hibernate", hibernate },
-                  { "restart", awesome.restart } }
+quit_menu_systemd = { { "yes", systemd_quit },
+                      { "no", function () end },
+                      { "hibernate", hibernate },
+                      { "halt", systemd_power_off },
+                      { "restart", awesome.restart } }
 
 if hostname == "toubib" then
-   quit_menu = quit_menu_std
+   quit_menu = quit_menu_systemd
 else
    quit_menu = quit_menu_gnome
 end
