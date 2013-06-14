@@ -44,6 +44,13 @@ function hostname()
 end
 
 hostname = hostname()
+
+if hostname == "toubib" then
+   session = "systemd"
+else
+   session = "gnome"
+end
+
 theme_path = "/usr/share/awesome/themes/default/theme.lua"
 -- Uncommment this for a lighter theme
 -- theme_path = "/usr/share/awesome/themes/sky/theme.lua"
@@ -54,18 +61,20 @@ beautiful.init(theme_path)
 -- ** This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
 emacs = "myemacs-n2"
-if hostname == "corbeau" or hostname == "gobelin" then
+if session == "gnome" then
    filemanager = "nautilus"
 else
    filemanager = "thunar"
 end
-if false then
-   webbrowser = "/home/moi/bin/mychrome"
-   webbrowser_class = "Chromium"
+
+if session == "systemd" then
+   webbrowser = "systemctl --user start iceweasel.service"
+   webbrowser_class = "Iceweasel"
 else
    webbrowser = "iceweasel"
    webbrowser_class = "Iceweasel"
 end
+
 editor = emacs
 editor_cmd = emacs
 
@@ -188,11 +197,13 @@ if hostname == "corbeau" then
    full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
    default_main_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
    default_second_conf = { layout = awful.layout.suit.tile.bottom, mfact = 0.5 }
+   float_conf = { layout = awful.layout.suit.floating, mfact = 0.5 }
 else
    term_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
    full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
    default_main_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
    default_second_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   float_conf = { layout = awful.layout.suit.floating, mfact = 0.5 }
 end
 -- ** the tags definition
 tags_config = {
@@ -201,9 +212,9 @@ tags_config = {
    { name = "net", tag_conf = { full_conf, full_conf }, },
    { name = "pl", tag_conf = { default_main_conf, default_second_conf }, },
    { name = "fm", tag_conf = { default_main_conf, default_second_conf }, },
-   { name = "IM", tag_conf = { default_main_conf, default_second_conf }, only_on = secondary_screen },
-   { name = "sup1", tag_conf = { default_main_conf, default_second_conf }, },
-   { name = "sup2", tag_conf = { default_main_conf, default_second_conf }, only_on = main_screen },
+   { name = "IM", tag_conf = { float_conf, float_conf }, only_on = secondary_screen },
+   { name = "sup1", tag_conf = { float_conf, float_conf }, },
+   { name = "sup2", tag_conf = { float_conf, float_conf }, only_on = main_screen },
    { name = "cal", tag_conf = { default_main_conf, default_second_conf }, only_on = secondary_screen },
 }
 -- ** Define a tag table which hold all screen tags.
@@ -270,24 +281,21 @@ systemd_power_off = function ()
                       awful.util.spawn("systemctl --user stat poweroff.target")
                    end
 
-quit_menu_gnome = { { "yes", gnome_quit },
-                    { "no", function () end },
-                    { "hibernate", hibernate },
-                    { "suspend", suspend },
-                    { "halt", gnome_power_off },
-                    { "restart", awesome.restart } }
-
-quit_menu_systemd = { { "yes", systemd_quit },
-                      { "no", function () end },
-                      { "hibernate", hibernate },
-                      { "halt", systemd_power_off },
-                      { "restart", awesome.restart } }
-
-if hostname == "toubib" then
-   quit_menu = quit_menu_systemd
+if session == "systemd" then
+   quit_menu = { { "yes", systemd_quit },
+                         { "no", function () end },
+                         { "hibernate", hibernate },
+                         { "halt", systemd_power_off },
+                         { "restart", awesome.restart } }
 else
-   quit_menu = quit_menu_gnome
+   quit_menu = { { "yes", gnome_quit },
+                 { "no", function () end },
+                 { "hibernate", hibernate },
+                 { "suspend", suspend },
+                 { "halt", gnome_power_off },
+                 { "restart", awesome.restart } }
 end
+
 
 if hostname == "corbeau" then
    xrandr_clone_display =
