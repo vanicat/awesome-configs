@@ -862,6 +862,8 @@ awful.rules.rules = {
      properties = { tag = tag_by_name["net"][main_screen] } },
    { rule = { class = "Chromium" },
      properties = { tag = tag_by_name["net"][main_screen] } },
+   { rule = { class = "Steam" },
+     properties = { tag = tag_by_name["sup2"][main_screen] } },
    { rule = { class = "MPlayer" },
      properties = { floating = true } },
    { rule = { class = "pinentry" },
