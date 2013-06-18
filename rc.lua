@@ -69,11 +69,10 @@ end
 
 if session == "systemd" then
    webbrowser = "systemctl --user start iceweasel.service"
-   webbrowser_class = "Iceweasel"
 else
    webbrowser = "iceweasel"
-   webbrowser_class = "Iceweasel"
 end
+webbrowser_class = "Iceweasel"
 
 editor = emacs
 editor_cmd = emacs
