@@ -60,7 +60,13 @@ theme_path = "/home/moi/.config/awesome/theme.lua"
 beautiful.init(theme_path)
 -- ** This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
-emacs = "myemacs-n2"
+
+if session == "systemd" then
+   emacs = "systemctl --user start emacs.service"
+else
+   emacs = "myemacs-n2"
+end
+
 if session == "gnome" then
    filemanager = "nautilus"
 else
