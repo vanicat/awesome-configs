@@ -63,6 +63,14 @@ terminal = "x-terminal-emulator"
 
 if session == "systemd" then
    emacs = "systemctl --user start emacs.service"
+   xbmc = "systemctl --user start xbmc.service"
+else
+   emacs = "myemacs-n2"
+   xbmc = "xbmc"
+end
+
+if session == "systemd" then
+   emacs = "systemctl --user start emacs.service"
 else
    emacs = "myemacs-n2"
 end
