@@ -680,10 +680,9 @@ globalkeys = awful.util.table.join(
    key_spawn(spawnkey, "Return",         terminal),
    key_spawn(spawnkey, "t",              filemanager),
 
-   key_run_or_raise({}, "XF86AudioMedia", "xbmc",                       { class = "xbmc.bin" }),
-   key_run_or_raise({}, "XF86Music",      "miro",                       { class = "Miro.real" }),
-   key_run_or_raise({}, "XF86Tools",      "xbmc", { class = "xbmc.bin" }),
-   key_run_or_raise(spawnkey, "v",        "gnome-volume-control.pulse", { class = "Gnome-volume-control.pulse" }),
+   key_run_or_raise({}, "XF86AudioMedia", xbmc,                       { class = "xbmc.bin" }),
+   key_run_or_raise({}, "XF86Tools",      xbmc, { class = "xbmc.bin" }),
+   key_run_or_raise(spawnkey, "v",        "gnome-control-center sound", { class = "gnome-control-center" }),
    key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = webbrowser_class }),
    key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = webbrowser_class }),
    key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
