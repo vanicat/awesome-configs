@@ -356,6 +356,8 @@ if hostname == "corbeau" then
 end
 
 
+freedesktop_menu = freedesktop.menu.new()
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "open terminal", terminal },
                                     { "open emacs", "emacs" },
@@ -363,12 +365,25 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                     { "open webbrowser", webbrowser },
                                     { "windows" , function () awful.menu.clients({ width=250 }) end},
                                     { "Debian", debian.menu.Debian_menu.Debian },
-                                    { "App", freedesktop.menu.new() },
+                                    { "App", freedesktop_menu },
                                  }
                        })
 
 mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
+
+-- ** key menu
+mykeymenu = awful.menu({ items = { { "windows" , function () awful.menu.clients({width=750, }, { keygrabber = true, font_size = 30 }) end},
+                                   { "MyApp", {
+                                        { "test", function () run_or_raise(xbmc, { class = "xbmc.bin" }) end }
+                                     }
+                                  },
+                                   { "quit...", quit_menu },
+                                   { "Debian", debian.menu.Debian_menu.Debian },
+                                   { "App", freedesktop_menu },
+                                }
+                      }
+                    )
 
 -- * Wibox
 -- ** Create a textclock widget
@@ -750,6 +765,7 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey,           }, ",", function ()
                                             awful.menu.clients({}, { width = 250, keygrabber = true })
                                          end),
+   awful.key({ modkey,           }, "$", function () mykeymenu:toggle() end),
 -- *** Show the main menu
    awful.key({ modkey,           }, "w", function () mymainmenu:toggle()        end),
 -- *** Layout manipulation
