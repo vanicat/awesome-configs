@@ -64,15 +64,13 @@ terminal = "x-terminal-emulator"
 if session == "systemd" then
    emacs = "systemctl --user start emacs.service"
    xbmc = "systemctl --user start xbmc.service"
+   steam = "systemctl --user start steam.service"
+   webbrowser = "systemctl --user start iceweasel.service"
 else
    emacs = "myemacs-n2"
    xbmc = "xbmc"
-end
-
-if session == "systemd" then
-   emacs = "systemctl --user start emacs.service"
-else
-   emacs = "myemacs-n2"
+   steam = "steam"
+   webbrowser = "iceweasel"
 end
 
 if session == "gnome" then
@@ -81,12 +79,12 @@ else
    filemanager = "thunar"
 end
 
-if session == "systemd" then
-   webbrowser = "systemctl --user start iceweasel.service"
-else
-   webbrowser = "iceweasel"
-end
 webbrowser_class = "Iceweasel"
+if hostname == "toubib" then
+   terminal_class = "Xfce4-terminal"
+else
+   terminal_class = "gnome-terminal"
+end
 
 editor = emacs
 editor_cmd = emacs
