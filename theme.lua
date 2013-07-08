@@ -5,7 +5,7 @@
 theme = {}
 
 if hostname == "toubib" then
-   theme.font       = "sans 12"
+   theme.font       = "sans 18"
 else
    theme.font       = "sans 8"
 end
