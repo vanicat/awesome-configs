@@ -363,7 +363,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                     { "open emacs", "emacs" },
                                     { "open file manager", filemanager },
                                     { "open webbrowser", webbrowser },
-                                    { "windows" , function () awful.menu.clients({ width=250 }) end},
+                                    { "windows" , function () awful.menu.clients({},{ width=250 }) end},
                                     { "Debian", debian.menu.Debian_menu.Debian },
                                     { "App", freedesktop_menu },
                                  }
@@ -576,7 +576,7 @@ mytasklist.buttons = awful.util.table.join(
                                      instance:hide()
                                      instance = nil
                                   else
-                                     instance = awful.menu.clients({ width=250 })
+                                     instance = awful.menu.clients({},{ width=250 })
                                   end
                                end),
    awful.button({ }, 4, function ()
