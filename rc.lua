@@ -371,12 +371,14 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
 
 -- ** key menu
-mykeymenu = awful.menu({ items = { { "windows" , function () awful.menu.clients({width=750, }, { keygrabber = true, font_size = 30 }) end},
-                                   { "MyApp", {
-                                        { "test", function () run_or_raise(xbmc, { class = "xbmc.bin" }) end }
-                                     }
-                                  },
+mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { class = "xbmc.bin" }) end },
+                                   { "Emacs", function () run_or_raise(emacs, { class = "Emacs" }) end },
+                                   { "Web", function () run_or_raise(webbrowser, { class = webbrowser_class }) end },
+                                   { "Steam", function () run_or_raise(steam, { class = "Steam" }) end },
+                                   { "Term", function () run_or_raise(terminal, { class = terminal_class }) end },
                                    { "quit...", quit_menu },
+                                   { "windows" , function () awful.menu.clients({width=750, }, { keygrabber = true, font_size = 30 }) end},
+
                                    { "Debian", debian.menu.Debian_menu.Debian },
                                    { "App", freedesktop_menu },
                                 }
