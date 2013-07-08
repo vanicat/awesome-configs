@@ -765,7 +765,7 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey,           }, ",", function ()
                                             awful.menu.clients({}, { width = 250, keygrabber = true })
                                          end),
-   awful.key({ modkey,           }, "$", function () mykeymenu:toggle() end),
+   awful.key({ modkey,           }, "$", function () mykeymenu:toggle({ keygrabber = true }) end),
 -- *** Show the main menu
    awful.key({ modkey,           }, "w", function () mymainmenu:toggle()        end),
 -- *** Layout manipulation
