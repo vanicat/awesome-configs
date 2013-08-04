@@ -386,6 +386,7 @@ mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { cl
                                    { "Web", function () run_or_raise(webbrowser, { class = webbrowser_class }) end },
                                    { "Steam", function () run_or_raise(steam, { class = "Steam" }) end },
                                    { "Term", function () run_or_raise(terminal, { class = terminal_class }) end },
+                                   { "performous", "performous" },
                                    { "quit...", quit_menu },
                                    { "Display", xrandr_menu },
                                    { "windows" , function () awful.menu.clients({width=750, }, { keygrabber = true, font_size = 30 }) end},
