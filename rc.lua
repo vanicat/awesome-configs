@@ -714,6 +714,7 @@ globalkeys = awful.util.table.join(
    key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = webbrowser_class }),
    key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
    key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
+   key_run_or_raise({}, "XF86Launch7",    steam,                        { class = "Steam" }),
 -- *** Moving trough the tags
    awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
    awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
