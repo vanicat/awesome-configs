@@ -388,12 +388,24 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
                                      menu = mymainmenu })
 
 -- ** key menu
+xrandr_menu = { }
+
+do
+   local fd = io.popen("xrandr | sed -e '/^[^ ]/d' -e 's/ *\\([0-9]\\+x[0-9]\\+\\).*/\\1/'")
+   for line in fd:lines() do
+      table.insert(xrandr_menu, { line, "xrandr --output HDMI-0 --mode " .. line })
+   end
+   fd:close()
+end
+
 mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { class = "xbmc.bin" }) end },
                                    { "Emacs", function () run_or_raise(emacs, { class = "Emacs" }) end },
                                    { "Web", function () run_or_raise(webbrowser, { class = webbrowser_class }) end },
                                    { "Steam", function () run_or_raise(steam, { class = "Steam" }) end },
                                    { "Term", function () run_or_raise(terminal, { class = terminal_class }) end },
+                                   { "performous", "performous" },
                                    { "quit...", quit_menu },
+                                   { "Display", xrandr_menu },
                                    { "windows" , function () awful.menu.clients({width=750, }, { keygrabber = true, font_size = 30 }) end},
 
                                    { "Debian", debian.menu.Debian_menu.Debian },
@@ -719,6 +731,7 @@ globalkeys = awful.util.table.join(
    key_run_or_raise(spawnkey, "f",        webbrowser,                   { class = webbrowser_class }),
    key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
    key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
+   key_run_or_raise({}, "XF86Launch7",    steam,                        { class = "Steam" }),
 -- *** Moving trough the tags
    awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
    awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
@@ -783,6 +796,7 @@ globalkeys = awful.util.table.join(
                                             awful.menu.clients({}, { width = 250, keygrabber = true })
                                          end),
    awful.key({ modkey,           }, "$", function () mykeymenu:toggle({ keygrabber = true }) end),
+   awful.key({         }, "XF86LaunchB", function () mykeymenu:toggle({ keygrabber = true }) end),
 -- *** Show the main menu
    awful.key({ modkey,           }, "w", function () mymainmenu:toggle()        end),
 -- *** Layout manipulation
