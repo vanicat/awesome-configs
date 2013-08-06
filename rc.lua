@@ -329,14 +329,25 @@ if hostname == "corbeau" then
 elseif hostname == "gobelin" then
    xrandr_clone_display =
       function ()
-         awful.util.spawn("xrandr --output VGA1 --auto --same-as LVDS1 --preferred")
-         awful.util.spawn("xrandr --output LVDS1 --auto --preferred")
+         for display in xrandr_screen() do
+            naughty.notify({ preset = naughty.config.presets.critical,
+                             title = "got one display",
+                             text = display })
+            if display == "HDMI1" then
+               awful.util.spawn("xrandr --output HDMI1 --mode 1360x768 --same-as LVDS1")
+               awful.util.spawn("xrandr --output LVDS1 --mode 1360x768 ")
+            elseif display == "VGA1" then
+               awful.util.spawn("xrandr --output VGA1 --auto --same-as LVDS1 --preferred")
+               awful.util.spawn("xrandr --output LVDS1 --auto --preferred")
+            end
+         end
       end
 
    xrandr_std_display =
       function ()
          awful.util.spawn("xrandr --output LVDS1 --auto --preferred")
          awful.util.spawn("xrandr --output VGA1 --right-of LVDS1 --auto --preferred")
+         awful.util.spawn("xrandr --output HDMI1 --mode 1360x768 --right-of LVDS1")
       end
 end
 
