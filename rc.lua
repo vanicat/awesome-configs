@@ -308,6 +308,12 @@ else
 end
 
 
+function xrandr_screen()
+   local f = io.popen ("/usr/bin/xrandr -q | grep connected | grep -v disconnected | sed 's/\\([A-Z0-9]*\\) .*/\\1/'")
+   local n = f:lines()
+   return(n)
+end
+
 if hostname == "corbeau" then
    xrandr_clone_display =
       function ()
