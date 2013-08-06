@@ -391,11 +391,25 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 xrandr_menu = { }
 
 do
-   local fd = io.popen("xrandr | sed -e '/^[^ ]/d' -e 's/ *\\([0-9]\\+x[0-9]\\+\\).*/\\1/'")
+   local fd = io.popen("xrandr")
+   local sub_menu = {}
+   local mode = ""
+   local display = ""
    for line in fd:lines() do
-      table.insert(xrandr_menu, { line, "xrandr --output HDMI-0 --mode " .. line })
+      if not string.find(line, "^Screen ") then
+         if string.find(line, "^%S+%sconnected") then
+            display = string.match(line, "^%S+")
+            sub_menu = {}
+            table.insert(xrandr_menu, { display, sub_menu })
+         elseif string.find(line, "^%s+%d+x%d+") then
+            mode = string.match(line, "%d+x%d+")
+            table.insert(sub_menu, { mode, "xrandr --output " .. display .. " --mode " .. mode })
+         end
+      end
+
    end
    fd:close()
+   -- TODO collapse submenu when only one display is connected
 end
 
 mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { class = "xbmc.bin" }) end },
