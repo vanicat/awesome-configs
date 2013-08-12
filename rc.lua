@@ -430,7 +430,7 @@ mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { cl
 
 -- * Wibox
 -- ** Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" })
+mytextclock = awful.widget.textclock({ align = "right" }," %a %d %b, %H:%M ")
 -- ** Add an orglendar to the textclock
 -- require("orglendar")
 -- orglendar.files = {
