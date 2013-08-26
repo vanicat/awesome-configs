@@ -330,9 +330,6 @@ elseif hostname == "gobelin" then
    xrandr_clone_display =
       function ()
          for display in xrandr_screen() do
-            naughty.notify({ preset = naughty.config.presets.critical,
-                             title = "got one display",
-                             text = display })
             if display == "HDMI1" then
                awful.util.spawn("xrandr --output HDMI1 --mode 1360x768 --same-as LVDS1")
                awful.util.spawn("xrandr --output LVDS1 --mode 1360x768 ")
