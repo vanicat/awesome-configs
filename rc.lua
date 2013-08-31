@@ -289,7 +289,7 @@ systemd_quit = function ()
                end
 
 systemd_power_off = function ()
-                      awful.util.spawn("systemctl --user stat poweroff.target")
+                      awful.util.spawn("systemctl --user start poweroff.target")
                    end
 
 if session == "systemd" then
