@@ -314,6 +314,11 @@ function xrandr_screen()
    return(n)
 end
 
+xrandr_num_display = 0
+for display in xrandr_screen() do
+   xrandr_num_display = xrandr_num_display + 1
+end
+
 if hostname == "corbeau" then
    xrandr_clone_display =
       function ()
@@ -356,9 +361,14 @@ myawesomemenu =
 }
 
 if hostname == "gobelin" or hostname == "corbeau" then
-   displaymenu =  { "display", {
-                       { "clone",    xrandr_clone_display },
-                       { "standart", xrandr_std_display   }}}
+   displaymenutable = { { "clone",    xrandr_clone_display },
+                        { "standart", xrandr_std_display   }}
+   if hostname == "gobelin" and xrandr_num_display == 2 then
+      table.insert(displaymenutable,{ "do not lock", "/home/moi/bin/do-not-lock-screen" })
+      table.insert(displaymenutable,{ "do lock", "/home/moi/bin/do-lock-screen" })
+   end
+
+   displaymenu =  { "display", displaymenutable }
 
    table.insert(myawesomemenu,displaymenu)
 end
