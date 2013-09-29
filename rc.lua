@@ -324,12 +324,16 @@ if hostname == "corbeau" then
       function ()
          awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050 --rotate normal")
          awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output HDMI-0 --auto --same-as DVI-0 --mode 1680x1050 --rotate normal")
+         awful.util.spawn("xrandr --output DVI-0 --auto --mode 1680x1050")
       end
 
    xrandr_std_display =
       function ()
          awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
          awful.util.spawn("xrandr --output DFP9 --rotate left --right-of DFP10 --mode 1680x1050")
+         awful.util.spawn("xrandr --output DVI-0 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output HDMI-0 --rotate left --right-of DVI-0 --mode 1680x1050")
       end
 elseif hostname == "gobelin" then
    xrandr_clone_display =
