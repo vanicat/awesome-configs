@@ -285,11 +285,11 @@ gnome_quit = function ()
              end
 
 systemd_quit = function ()
-                  awful.util.spawn("systemctl --user start exit.target")
+                  awful.util.spawn("systemctl --user exit")
                end
 
 systemd_power_off = function ()
-                      awful.util.spawn("systemctl --user start poweroff.target")
+                      awful.util.spawn("systemctl --user start poweroff.service")
                    end
 
 if session == "systemd" then
