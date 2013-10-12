@@ -314,17 +314,26 @@ function xrandr_screen()
    return(n)
 end
 
+xrandr_num_display = 0
+for display in xrandr_screen() do
+   xrandr_num_display = xrandr_num_display + 1
+end
+
 if hostname == "corbeau" then
    xrandr_clone_display =
       function ()
          awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050 --rotate normal")
          awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output HDMI-0 --auto --same-as DVI-0 --mode 1680x1050 --rotate normal")
+         awful.util.spawn("xrandr --output DVI-0 --auto --mode 1680x1050")
       end
 
    xrandr_std_display =
       function ()
          awful.util.spawn("xrandr --output DFP10 --auto --mode 1680x1050")
          awful.util.spawn("xrandr --output DFP9 --rotate left --right-of DFP10 --mode 1680x1050")
+         awful.util.spawn("xrandr --output DVI-0 --auto --mode 1680x1050")
+         awful.util.spawn("xrandr --output HDMI-0 --rotate left --right-of DVI-0 --mode 1680x1050")
       end
 elseif hostname == "gobelin" then
    xrandr_clone_display =
@@ -356,9 +365,14 @@ myawesomemenu =
 }
 
 if hostname == "gobelin" or hostname == "corbeau" then
-   displaymenu =  { "display", {
-                       { "clone",    xrandr_clone_display },
-                       { "standart", xrandr_std_display   }}}
+   displaymenutable = { { "clone",    xrandr_clone_display },
+                        { "standart", xrandr_std_display   }}
+   if hostname == "gobelin" and xrandr_num_display == 2 then
+      table.insert(displaymenutable,{ "do not lock", "/home/moi/bin/do-not-lock-screen" })
+      table.insert(displaymenutable,{ "do lock", "/home/moi/bin/do-lock-screen" })
+   end
+
+   displaymenu =  { "display", displaymenutable }
 
    table.insert(myawesomemenu,displaymenu)
 end
