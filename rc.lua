@@ -203,7 +203,7 @@ function run_or_raise(cmd, properties)
 end
 -- * Tags
 -- ** different default for different computer
-if hostname == "corbeau" then
+if hostname == "madame" then
    term_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
    full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
    default_main_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
@@ -319,7 +319,7 @@ for display in xrandr_screen() do
    xrandr_num_display = xrandr_num_display + 1
 end
 
-if hostname == "corbeau" then
+if hostname == "madame" then
    xrandr_clone_display =
       function ()
          awful.util.spawn("xrandr --output DFP9 --auto --same-as DFP10 --mode 1680x1050 --rotate normal")
@@ -364,7 +364,7 @@ myawesomemenu =
    { "quit...", quit_menu },
 }
 
-if hostname == "gobelin" or hostname == "corbeau" then
+if hostname == "gobelin" or hostname == "madame" then
    displaymenutable = { { "clone",    xrandr_clone_display },
                         { "standart", xrandr_std_display   }}
    if hostname == "gobelin" and xrandr_num_display == 2 then
@@ -377,7 +377,7 @@ if hostname == "gobelin" or hostname == "corbeau" then
    table.insert(myawesomemenu,displaymenu)
 end
 
-if hostname == "corbeau" then
+if hostname == "madame" then
    table.insert(myawesomemenu,{ "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end })
 end
 
