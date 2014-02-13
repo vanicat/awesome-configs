@@ -212,6 +212,31 @@ function run_or_raise(cmd, properties)
    end
    awful.util.spawn(cmd)
 end
+
+-- ** raise or nothing
+-- find a client, raise it if it exist, do nothing if it don't
+
+function raise_or_nothing(properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   if n > 0 then
+      c = matched_clients[1]
+      local ctags = c:tags()
+      if table.getn(ctags) == 0 then
+         -- ctags is empty, show client on current tag
+         local curtag = awful.tag.selected()
+         awful.client.movetotag(curtag, c)
+      else
+         -- Otherwise, pop to first tag client is visible on
+         awful.tag.viewonly(ctags[1])
+      end
+      -- And then focus the client
+      client.focus = c
+      c:raise()
+      return
+   end
+end
+
 -- * Tags
 -- ** different default for different computer
 if hostname == "madame" then
