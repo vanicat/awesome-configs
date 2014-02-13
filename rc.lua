@@ -158,12 +158,9 @@ function match (table1, table2)
    end
    return true
 end
--- ** Run or raise
---- Spawns cmd if no client can be found matching properties
--- If such a client can be found, pop to first tag where it is visible, and give it focus
--- @param cmd the command to execute
--- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
-function run_or_raise(cmd, properties)
+
+-- ** Return clients matching a property
+function client_matching(properties)
    local clients = client.get()
    local focused = awful.client.next(0)
    local findex = 0
@@ -179,6 +176,20 @@ function run_or_raise(cmd, properties)
          end
       end
    end
+   matched_clients.n = n
+   matched_clients.findex = findex
+   return matched_clients
+end
+-- ** Run or raise
+--- Spawns cmd if no client can be found matching properties
+-- If such a client can be found, pop to first tag where it is visible, and give it focus
+-- @param cmd the command to execute
+-- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
+function run_or_raise(cmd, properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   local findex = matched_clients.findex
+
    if n > 0 then
       local c = matched_clients[1]
       -- if the focused window matched switch focus to next in list
