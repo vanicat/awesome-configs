@@ -45,7 +45,7 @@ end
 
 hostname = hostname()
 
-if hostname == "toubib" then
+if hostname == "toubib" or hostname == "gobelin" then
    session = "systemd"
 else
    session = "gnome"
