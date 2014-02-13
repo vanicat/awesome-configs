@@ -237,6 +237,19 @@ function raise_or_nothing(properties)
    end
 end
 
+-- ** close a client if it exist.
+-- find a client, raise it if it exist, do nothing if it don't
+
+function close_from_properties(properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   if n > 0 then
+      c = matched_clients[1]
+      c:kill()
+      return
+   end
+end
+
 -- * Tags
 -- ** different default for different computer
 if hostname == "madame" then
