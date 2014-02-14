@@ -726,6 +726,7 @@ for s = 1, screen.count() do
    if s == secondary_screen then right_layout:add(mysystray) end
    right_layout:add(memwidget[1])
    right_layout:add(cpuwidget[1])
+   right_layout:add(obvious.battery())
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
    --right_layout:add(myneedreboot)
