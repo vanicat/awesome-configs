@@ -1,13 +1,22 @@
--- * Standard awesome library
-require("awful")
+-- Standard awesome library
+local gears = require("gears")
+local awful = require("awful")
+awful.rules = require("awful.rules")
 require("awful.autofocus")
-require("awful.rules")
+-- Widget and layout library
+local wibox = require("wibox")
 -- Theme handling library
-require("beautiful")
+local beautiful = require("beautiful")
 -- Notification library
-require("naughty")
+local naughty = require("naughty")
+local menubar = require("menubar")
+local lib = {
+   markup = require("obvious.lib.markup"),
+   hooks = require("obvious.lib.hooks")
+}
+
 require("wicked")
-require('freedesktop.utils')
+require("freedesktop.utils")
 require("obvious.cpu")
 require("obvious.mem")
 require("obvious.keymap_switch")
@@ -21,7 +30,7 @@ end
 -- Handle runtime errors after startup
 do
    local in_error = false
-   awesome.add_signal("debug::error", function (err)
+   awesome.connect_signal("debug::error", function (err)
                                          -- Make sure we don't go into an endless error loop
                                          if in_error then return end
                                          in_error = true
@@ -444,7 +453,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                  }
                        })
 
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
 
 -- ** key menu
@@ -490,7 +499,7 @@ mykeymenu = awful.menu({ items = { { "Xbmc", function () run_or_raise(xbmc, { cl
 
 -- * Wibox
 -- ** Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" }," %a %d %b, %H:%M ")
+mytextclock = awful.widget.textclock() --({ align = "right" }," %a %d %b, %H:%M ")
 -- ** Add an orglendar to the textclock
 -- require("orglendar")
 -- orglendar.files = {
@@ -516,22 +525,22 @@ function reboot_required()
    end
 end
 -- *** The widget
-myneedreboot = widget({ type = "textbox" })
-awful.hooks.timer.register(1, function() myneedreboot.text = reboot_required() end)
+-- myneedreboot = wibox.widget.textbox()
+-- lib.hooks.timer.register(5, 30, function() myneedreboot:set_text(reboot_required()) end)
 -- ** Create a systray
-mysystray = widget({ type = "systray" })
+mysystray = wibox.widget.systray()
 -- ** Create a cpuwidget
 cpuwidget=obvious.cpu()
 cpuwidget:set_width(20)
 cpuwidget:set_background_color("#494B4F")
 cpuwidget:set_color("#FF5656")
-cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
+-- cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
 
 memwidget = obvious.mem()
 memwidget:set_width(20)
 memwidget:set_background_color("#494B4F")
 memwidget:set_color("#0000ff")
-memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
+-- memwidget:set_gradient_colors({ "#0000ff", "#00bfff", "#00ffff" })
 -- ** Create a keyboard widget
 -- obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
 
@@ -591,9 +600,9 @@ keymenu =  awful.menu.new({ items =
                     )
 
 -- *** The widget
-keywidget = widget({ type = "textbox" })
-keywidget.text = "..."
-update_keywidget = function() keywidget.text = get_current_keymap() end
+keywidget = wibox.widget.textbox()
+keywidget:set_text("...")
+update_keywidget = function() keywidget:set_text(get_current_keymap()) end
 update_keywidget()
 keywidget:buttons(awful.util.table.join(
                      awful.button({ }, 1, function ()
@@ -607,7 +616,7 @@ keywidget:buttons(awful.util.table.join(
                ))
 
 
-awful.hooks.timer.register(120, update_keywidget)
+-- awful.hooks.timer.register(120, update_keywidget)
 
 --  obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
 -- ** Create a widget for each screen.
@@ -694,7 +703,7 @@ mytasklist.buttons = awful.util.table.join(
 -- *** No realy create those widget
 for s = 1, screen.count() do
 -- **** Create a promptbox for each screen
-   mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
+   mypromptbox[s] = awful.widget.prompt() --({ layout = awful.widget.layout.horizontal.leftright })
 -- **** Create an imagebox widget which will contains an icon indicating which layout we're using.
 --      We need one layoutbox per screen.
    mylayoutbox[s] = awful.widget.layoutbox(s)
@@ -704,11 +713,9 @@ for s = 1, screen.count() do
                              awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                              awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
 -- **** Create a taglist widget
-   mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
+   mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
 -- **** Create a tasklist widget
-   mytasklist[s] = awful.widget.tasklist(function(c)
-                                            return awful.widget.tasklist.label.currenttags(c, s)
-                                         end, mytasklist.buttons)
+   mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 -- **** Create the wibox
    mywibox[s] = awful.wibox({ position = "top", screen = s })
 -- **** Add widgets to the wibox - order matters
@@ -718,7 +725,7 @@ for s = 1, screen.count() do
    end
    table.insert(leftbox, mytaglist[s])
    table.insert(leftbox, mypromptbox[s])
-   leftbox.layout = awful.widget.layout.horizontal.leftright
+   -- leftbox.layout = awful.widget.layout.horizontal.leftright
 
    mywibox[s].widgets = {
       leftbox,
@@ -731,7 +738,7 @@ for s = 1, screen.count() do
       keywidget,
       s == secondary_screen and mysystray or nil,
       mytasklist[s],
-      layout = awful.widget.layout.horizontal.rightleft
+--      layout = awful.widget.layout.horizontal.rightleft
    }
 end
 
@@ -985,11 +992,11 @@ root.keys(globalkeys)
 awful.rules.rules = {
    -- All clients will match this rule.
    { rule = { },
-     properties = { border_width = beautiful.border_width,
-                    border_color = beautiful.border_normal,
-                    focus = true,
-                    keys = clientkeys,
-                    buttons = clientbuttons } },
+      properties = { border_width = beautiful.border_width,
+                     border_color = beautiful.border_normal,
+                     focus = awful.client.focus.filter,
+                     keys = clientkeys,
+                     buttons = clientbuttons } },
    { rule = { class = "Calibre-gui", instance = "calibre-gui" },
      properties = { tag = tag_by_name["cal"][1] } },
    { rule = { class = "Iceweasel", instance = "Navigator" },
@@ -1025,7 +1032,9 @@ awful.rules.rules = {
      properties = { tag = tag_by_name["IM"][secondary_screen] } },
    { rule = { instance = "x-nautilus-desktop" },
      properties = { focusable = false } },
+
 }
+
 -- ** Black magick for chromium or iceweasel on both screen
 function select_browser(tag)
    local clients = client.get()
@@ -1048,7 +1057,7 @@ end
 
 if not(main_screen == secondary_screen) then
    for s = main_screen, secondary_screen do
-      tag_by_name["net"][s]:add_signal("property::selected",select_browser)
+      tag_by_name["net"][s]:connect_signal("property::selected",select_browser)
    end
 end
 
@@ -1056,13 +1065,13 @@ end
 -- ** Signal function to execute when a new client appears.
 focus_by_mouse = false
 
-client.add_signal("manage",
+client.connect_signal("manage",
                   function (c, startup)
                      -- Add a titlebar
                      -- awful.titlebar.add(c, { modkey = modkey })
 
                      -- Enable sloppy focus
-                     c:add_signal("mouse::enter", function(c)
+                     c:connect_signal("mouse::enter", function(c)
                                                      if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
                                                      and awful.client.focus.filter(c) then
                                                      client.focus = c
@@ -1071,7 +1080,7 @@ client.add_signal("manage",
                                                end)
                   end)
 
-client.add_signal("focus", function(c)
+client.connect_signal("focus", function(c)
                               c.border_color = beautiful.border_focus
                               if not focus_by_mouse then
                                  c:raise()
@@ -1079,7 +1088,7 @@ client.add_signal("focus", function(c)
                                  focus_by_mouse = false
                               end
                            end)
-client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- * autostart
 -- awful.util.spawn("/usr/bin/nm-applet")
