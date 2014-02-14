@@ -524,7 +524,7 @@ end
 -- ** Create a systray
 mysystray = wibox.widget.systray()
 -- ** Create a cpuwidget
-cpuwidget=obvious.cpu(wibox.widget.graph)
+cpuwidget=obvious.cpu()
 cpuwidget:set_width(20)
 cpuwidget:set_background_color("#494B4F")
 cpuwidget:set_color("#FF5656")
@@ -724,11 +724,11 @@ for s = 1, screen.count() do
    local right_layout = wibox.layout.fixed.horizontal()
    right_layout:add(keywidget)
    if s == secondary_screen then right_layout:add(mysystray) end
+   right_layout:add(memwidget[1])
+   right_layout:add(cpuwidget[1])
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
    --right_layout:add(myneedreboot)
---   right_layout:add(obvious.cpu)
---   right_layout:add(memwidget.widget)
 
    -- Now bring it all together (with the tasklist in the middle)
    local layout = wibox.layout.align.horizontal()
