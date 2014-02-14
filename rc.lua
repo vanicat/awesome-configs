@@ -10,21 +10,15 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
-local lib = {
-   markup = require("obvious.lib.markup"),
-   hooks = require("obvious.lib.hooks")
-}
 
 require("wicked")
 require("freedesktop.utils")
-require("obvious.cpu")
-require("obvious.mem")
-require("obvious.keymap_switch")
+require("obvious")
 -- * errors checking
 if awesome.startup_errors then
-   naughty.notify({ preset = naughty.config.presets.critical,
-                    title = "Oops, there were errors during startup!",
-                    text = awesome.startup_errors })
+    naughty.notify({ preset = naughty.config.presets.critical,
+                     title = "Oops, there were errors during startup!",
+                     text = awesome.startup_errors })
 end
 
 -- Handle runtime errors after startup
@@ -108,7 +102,7 @@ modkey = "Mod4"
 spawnkey = { modkey, "Control" }
 
 -- ** Table of layouts to cover with awful.layout.inc, order matters.
-layouts =
+local layouts =
    {
    awful.layout.suit.tile,
    --    awful.layout.suit.tile.left,
@@ -530,7 +524,7 @@ end
 -- ** Create a systray
 mysystray = wibox.widget.systray()
 -- ** Create a cpuwidget
-cpuwidget=obvious.cpu()
+cpuwidget=obvious.cpu(wibox.widget.graph)
 cpuwidget:set_width(20)
 cpuwidget:set_background_color("#494B4F")
 cpuwidget:set_color("#FF5656")
@@ -719,27 +713,30 @@ for s = 1, screen.count() do
 -- **** Create the wibox
    mywibox[s] = awful.wibox({ position = "top", screen = s })
 -- **** Add widgets to the wibox - order matters
-   leftbox = { }
+   local left_layout = wibox.layout.fixed.horizontal()
    if s == left_screen then
-      table.insert(leftbox, mylauncher)
+      left_layout:add(mylauncher)
    end
-   table.insert(leftbox, mytaglist[s])
-   table.insert(leftbox, mypromptbox[s])
+   left_layout:add(mytaglist[s])
+   left_layout:add(mypromptbox[s])
    -- leftbox.layout = awful.widget.layout.horizontal.leftright
 
-   mywibox[s].widgets = {
-      leftbox,
-      s ~= left_screen and s == right_screen and mylauncher or nil,
-      mylayoutbox[s],
-      myneedreboot,
-      mytextclock,
-      cpuwidget.widget,
-      memwidget.widget,
-      keywidget,
-      s == secondary_screen and mysystray or nil,
-      mytasklist[s],
---      layout = awful.widget.layout.horizontal.rightleft
-   }
+   local right_layout = wibox.layout.fixed.horizontal()
+   right_layout:add(keywidget)
+   if s == secondary_screen then right_layout:add(mysystray) end
+   right_layout:add(mytextclock)
+   right_layout:add(mylayoutbox[s])
+   --right_layout:add(myneedreboot)
+--   right_layout:add(obvious.cpu)
+--   right_layout:add(memwidget.widget)
+
+   -- Now bring it all together (with the tasklist in the middle)
+   local layout = wibox.layout.align.horizontal()
+   layout:set_left(left_layout)
+   layout:set_middle(mytasklist[s])
+   layout:set_right(right_layout)
+
+   mywibox[s]:set_widget(layout)
 end
 
 -- * Mouse bindings
@@ -907,7 +904,7 @@ globalkeys = awful.util.table.join(
                                          end ),
 
 -- *** Prompt
-   awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+   awful.key({ modkey },            "r",     function() menubar.show() end),
 
    awful.key({ modkey }, "x",
              function ()
