@@ -670,7 +670,7 @@ mytasklist.buttons = awful.util.table.join(
                            else
                               sticky_icon = beautiful.titlebar_sticky_button_focus_inactive
                            end
-                           if instance and instance.items[1] and instance.items[1].wibox.screen then
+                           if instance then
                               instance:hide()
                               instance = nil
                            else
