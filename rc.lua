@@ -54,6 +54,12 @@ else
    session = "gnome"
 end
 
+if hostname == "gobelin" then
+   asbattery = true
+else
+   asbattery = false
+end
+
 theme_path = "/usr/share/awesome/themes/default/theme.lua"
 -- Uncommment this for a lighter theme
 -- theme_path = "/usr/share/awesome/themes/sky/theme.lua"
@@ -726,7 +732,9 @@ for s = 1, screen.count() do
    if s == secondary_screen then right_layout:add(mysystray) end
    right_layout:add(memwidget[1])
    right_layout:add(cpuwidget[1])
-   right_layout:add(obvious.battery())
+   if asbattery then
+      right_layout:add(obvious.battery())
+   end
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
    --right_layout:add(myneedreboot)
