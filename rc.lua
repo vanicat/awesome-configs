@@ -1056,7 +1056,7 @@ function select_browser(tag)
    end
    for i, c in pairs(clients) do
       if match(properties, c) then
-         c.screen=ntag.screen
+         c.screen=awful.tag.getscreen(ntag)
          c:tags({ ntag })
       end
    end
