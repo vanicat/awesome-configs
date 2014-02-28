@@ -795,6 +795,7 @@ end
 globalkeys = awful.util.table.join(
 -- *** The multimedia keys and standard program
 --     Do not forget to tell gnome to not interfere, and to let us play with them
+   key_spawn({}, "XF86PowerOff",         "systemctl hibernate"),
    key_spawn({}, "XF86AudioPlay",        "nyxmms2 toggle"),
    key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
 
