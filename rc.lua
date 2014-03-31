@@ -1073,29 +1073,36 @@ end
 -- ** Signal function to execute when a new client appears.
 focus_by_mouse = false
 
-client.connect_signal("manage",
-                  function (c, startup)
-                     -- Add a titlebar
-                     -- awful.titlebar.add(c, { modkey = modkey })
+autoraise_target = nil
+autoraise_timer = timer { timeout = 0.5 }
+autoraise_timer:connect_signal("timeout", function()
+  if autoraise_target then autoraise_target:raise() end
+  autoraise_timer:stop()
+end)
+client.connect_signal("mouse::enter",
+                      function(c)
+                         if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+                         and awful.client.focus.filter(c) then
+                            client.focus = c
+                            focus_by_mouse = true
+                            autoraise_target = c
+                            autoraise_timer:again()
+                         end
+                      end)
 
-                     -- Enable sloppy focus
-                     c:connect_signal("mouse::enter", function(c)
-                                                     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-                                                     and awful.client.focus.filter(c) then
-                                                     client.focus = c
-                                                     focus_by_mouse = true
-                                                  end
-                                               end)
-                  end)
+client.connect_signal("mouse::leave",
+                      function(c)
+                         if autoraise_target == c then autoraise_target = nil end
+                      end)
 
-client.connect_signal("focus", function(c)
-                              c.border_color = beautiful.border_focus
-                              if not focus_by_mouse then
-                                 c:raise()
-                              else
-                                 focus_by_mouse = false
-                              end
-                           end)
+client.connect_signal("focus",
+                      function(c)
+                         c.border_color = beautiful.border_focus
+                         if not focus_by_mouse then
+                            c:raise()
+                         end
+                         focus_by_mouse = false
+                      end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
 -- * autostart
