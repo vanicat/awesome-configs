@@ -11,6 +11,10 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
+local all_menu_dirs = { '/usr/share/applications/', '/usr/local/share/applications/', '~/.local/share/applications/', '/usr/share/applications/kde4/'}
+
+menubar.menu_gen.all_menu_dirs = all_menu_dirs
+
 require("wicked")
 require("freedesktop.utils")
 require("obvious")
@@ -313,7 +317,7 @@ end
 require("debian.menu")
 require('freedesktop.menu')
 
-freedesktop.menu.all_menu_dirs = { '/usr/share/applications/', '/usr/share/applications/kde4/' }
+freedesktop.menu.all_menu_dirs = all_menu_dirs
 
 -- ** Create a laucher widget and a main menu
 hibernate = function ()
