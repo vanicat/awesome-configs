@@ -533,8 +533,26 @@ function reboot_required()
       return ""
    end
 end
+
+function no_hibernate()
+   tmp = io.open('/var/run/do-not-hibernate')
+   if tmp then
+      tmp:close()
+      return 'Do not hibernate'
+   else
+      return ""
+   end
+end
 -- *** The widget
 -- myneedreboot = wibox.widget.textbox()
+-- lib.hooks.timer.register(5, 30, function() myneedreboot:set_text(reboot_required()) end)
+
+my_no_hibernate = wibox.widget.textbox()
+
+hibernate_timer = timer({ timeout = 120 })
+hibernate_timer:connect_signal("timeout", function() my_no_hibernate:set_text(no_hibernate()) end)
+hibernate_timer:start()
+
 -- lib.hooks.timer.register(5, 30, function() myneedreboot:set_text(reboot_required()) end)
 -- ** Create a systray
 mysystray = wibox.widget.systray()
@@ -624,6 +642,10 @@ keywidget:buttons(awful.util.table.join(
                      awful.button({ }, 5, awful.tag.viewprev)
                ))
 
+
+keywidget_timer = timer({ timeout = 120 })
+keywidget_timer:connect_signal("timeout", update_keywidget)
+keywidget_timer:start()
 
 -- awful.hooks.timer.register(120, update_keywidget)
 
@@ -746,8 +768,8 @@ for s = 1, screen.count() do
       right_layout:add(obvious.battery())
    end
    right_layout:add(mytextclock)
+   right_layout:add(my_no_hibernate)
    right_layout:add(mylayoutbox[s])
-   --right_layout:add(myneedreboot)
 
    -- Now bring it all together (with the tasklist in the middle)
    local layout = wibox.layout.align.horizontal()
