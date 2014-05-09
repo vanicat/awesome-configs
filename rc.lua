@@ -354,11 +354,16 @@ systemd_power_off = function ()
                       awful.util.spawn("systemctl --user start poweroff.service")
                    end
 
+systemd_reboot = function ()
+                      awful.util.spawn("systemctl --user start reboot.service")
+                   end
+
 if session == "systemd" then
    quit_menu = { { "yes", systemd_quit },
                          { "no", function () end },
                          { "hibernate", hibernate },
                          { "halt", systemd_power_off },
+                         { "reboot", systemd_reboot },
                          { "restart", awesome.restart } }
 else
    quit_menu = { { "yes", gnome_quit },
