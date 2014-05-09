@@ -942,7 +942,7 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey, "Control" }, "r", awesome.restart),
 
    awful.key({ modkey, "Shift"   }, "q", function ()
-                                            awful.menu({ items = quit_menu }):show({ keygrabber = true })
+                                            awful.menu(quit_menu):show({ keygrabber = true })
                                          end ),
 
 -- *** Prompt
