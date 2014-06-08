@@ -11,6 +11,10 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
+local all_menu_dirs = { '/usr/share/applications/', '/usr/local/share/applications/', '~/.local/share/applications/', '/usr/share/applications/kde4/'}
+
+menubar.menu_gen.all_menu_dirs = all_menu_dirs
+
 -- Load Debian menu entries
 require("debian.menu")
 
