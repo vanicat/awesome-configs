@@ -44,6 +44,17 @@ end
 -- }}}
 
 -- {{{ Variable definitions
+-- hostname for host dependend configs
+function hostname()
+   local f = io.popen ("/bin/hostname")
+   local n = f:read("*a") or "none"
+   f:close()
+   n=string.gsub(n, "\n$", "")
+   return(n)
+end
+
+hostname = hostname()
+
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
@@ -62,18 +73,18 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
-    awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
+    --- awful.layout.suit.tile.top,
+    -- awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral,
     awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier
+    awful.layout.suit.magnifier,
+    awful.layout.suit.floating
 }
 -- }}}
 
@@ -87,10 +98,51 @@ end
 
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
+if hostname == "madame" then
+   term_conf = { layout = awful.layout.suit.fair.horizontal, mfact = 0.5 }
+   full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_main_conf = { layout = awful.layout.suit.tile, mfact = 0.5 }
+   default_second_conf = { layout = awful.layout.suit.tile.bottom, mfact = 0.5 }
+   float_conf = { layout = awful.layout.suit.floating, mfact = 0.5 }
+else
+   term_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   full_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_main_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   default_second_conf = { layout = awful.layout.suit.max, mfact = 0.75 }
+   float_conf = { layout = awful.layout.suit.floating, mfact = 0.5 }
+end
+
+tags_description = {
+   {
+      { name = "te", layout = term_conf },
+      { name = "em", layout = full_conf },
+      { name = "net", layout = full_conf },
+      { name = "pl", layout = default_main_conf },
+      { name = "fm", layout = default_main_conf },
+      { name = "sup1", layout = float_conf },
+      { name = "sup2", layout = float_conf },
+   },
+   {
+      { name = "te", layout = default_second_conf },
+      { name = "em", layout = full_conf },
+      { name = "net", layout = full_conf },
+      { name = "pl", layout = default_second_conf },
+      { name = "fm", layout = default_second_conf },
+      { name = "IM", layout = float_conf },
+      { name = "cal", layout = default_second_conf}
+   }
+}
+
 tags = {}
 for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+   td = tags_description[s]
+   -- Each screen has its own tag table.
+   tags[s] = awful.tag({ td[1].name, td[2].name, td[3].name,
+                         td[4].name, td[5].name, td[6].name,
+                         td[7].name }, s, layouts[1])
+   for i = 1, 7 do
+      awful.layout.set(td[i].layout.layout,tags[s][i])
+   end
 end
 -- }}}
 
