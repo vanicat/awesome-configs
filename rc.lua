@@ -612,10 +612,10 @@ end
 function switch_keymap(layout_string)
    if keyboard_layout[layout_string] then
       awful.util.spawn("setxkbmap \"" .. keyboard_layout[layout_string] .. "\"")
-      update_keywidget(layout_string)
    else
       awful.util.spawn("setxkbmap \"" .. layout_string .. "\"")
    end
+   update_keywidget()
 end
 -- *** The menu
 keymenu =  awful.menu.new({ items =
