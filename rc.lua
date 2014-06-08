@@ -219,6 +219,17 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
+-- some usefull function
+function key_spawn (mod, key, cmd)
+   return awful.key(mod, key, function () awful.util.spawn(cmd) end)
+end
+
+function key_run_or_raise (mod, key, cmd, prop)
+   return awful.key(mod, key, function () run_or_raise(cmd, prop) end)
+end
+
+
+-- the bindings
 globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
@@ -279,11 +290,26 @@ globalkeys = awful.util.table.join(
     -- Menubar
     awful.key({ modkey }, "r", function() menubar.show() end),
 
-    -- may change
+    -- my change
     -- listing clients.
     awful.key({ modkey,           }, ",", function ()
                                             awful.menu.clients({}, { width = 250, keygrabber = true })
                                           end),
+    -- multimedia
+    key_spawn({}, "XF86PowerOff",         "systemctl hibernate"),
+    key_spawn({}, "XF86AudioPlay",        "nyxmms2 toggle"),
+    key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
+
+    key_spawn({}, "XF86AudioPrev",        "nyxmms2 prev"),
+    key_spawn({}, "XF86AudioNext",        "nyxmms2 next"),
+
+    key_spawn({ "Ctrl" }, "XF86AudioPlay",        "nyxmms2 stop"),
+    key_spawn({ "Ctrl" }, "XF86AudioNext",        "xmms-rater 1; nyxmms2 next"),
+    key_spawn({}, "XF86AudioRaiseVolume", "pactl set-sink-volume 0 +2%"),
+    key_spawn({}, "XF86AudioLowerVolume", "pactl set-sink-volume 0 -2%"),
+    key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
+    key_spawn({}, "XF86Sleep",            "sudo pm-hibernate")
+
 )
 
 clientkeys = awful.util.table.join(
