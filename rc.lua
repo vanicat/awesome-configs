@@ -136,6 +136,20 @@ end
 
 hostname = hostname()
 
+-- screen...
+
+if screen.count() ~= 1 then
+   left_screen = 1
+   right_screen = screen.count()
+   main_screen = left_screen
+   secondary_screen = right_screen
+else
+   left_screen = 1
+   right_screen = 1
+   main_screen = left_screen
+   secondary_screen = right_screen
+end
+
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
