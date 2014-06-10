@@ -43,6 +43,87 @@ do
 end
 -- }}}
 
+-- {{{ Some function definition
+function match (table1, table2)
+   for k, v in pairs(table1) do
+      if not(table2[k]) or (table2[k] ~= v and not table2[k]:find(v)) then
+         return false
+      end
+   end
+   return true
+end
+
+--- Spawns cmd if no client can be found matching properties
+-- If such a client can be found, pop to first tag where it is visible, and give it focus
+-- @param cmd the command to execute
+-- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
+function run_or_raise(cmd, properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   local findex = matched_clients.findex
+
+   if n > 0 then
+      local c = matched_clients[1]
+      -- if the focused window matched switch focus to next in list
+      if 0 < findex and findex < n then
+         c = matched_clients[findex+1]
+      end
+      local ctags = c:tags()
+      if table.getn(ctags) == 0 then
+         -- ctags is empty, show client on current tag
+         local curtag = awful.tag.selected()
+         awful.client.movetotag(curtag, c)
+      else
+         -- Otherwise, pop to first tag client is visible on
+         awful.tag.viewonly(ctags[1])
+      end
+      -- And then focus the client
+      client.focus = c
+      c:raise()
+      return
+   end
+   awful.util.spawn(cmd)
+end
+
+-- raise or nothing
+-- find a client, raise it if it exist, do nothing if it don't
+
+function raise_or_nothing(properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   if n > 0 then
+      c = matched_clients[1]
+      local ctags = c:tags()
+      if table.getn(ctags) == 0 then
+         -- ctags is empty, show client on current tag
+         local curtag = awful.tag.selected()
+         awful.client.movetotag(curtag, c)
+      else
+         -- Otherwise, pop to first tag client is visible on
+         awful.tag.viewonly(ctags[1])
+      end
+      -- And then focus the client
+      client.focus = c
+      c:raise()
+      return
+   end
+end
+
+-- close a client if it exist.
+-- find a client, raise it if it exist, do nothing if it don't
+
+function close_from_properties(properties)
+   local matched_clients = client_matching(properties)
+   local n = matched_clients.n
+   if n > 0 then
+      c = matched_clients[1]
+      c:kill()
+      return
+   end
+end
+
+-- }}}
+
 -- {{{ Variable definitions
 -- hostname for host dependend configs
 function hostname()
