@@ -136,6 +136,18 @@ end
 
 hostname = hostname()
 
+if true then
+   session = "systemd"
+else
+   session = "gnome"
+end
+
+if hostname == "gobelin" then
+   asbattery = true
+else
+   asbattery = false
+end
+
 -- screen...
 
 if screen.count() ~= 1 then
@@ -157,6 +169,23 @@ beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
+
+-- Some usefull program
+if session == "systemd" then
+   emacs = "systemctl --user start emacs.service"
+   xbmc = "systemctl --user start xbmc.service"
+   steam = "systemctl --user start steam.service"
+   webbrowser = "systemctl --user start iceweasel.service"
+else
+   emacs = "myemacs-n2"
+   xbmc = "xbmc"
+   steam = "steam"
+   webbrowser = "iceweasel"
+end
+
+filemanager = "nautilus"
+webbrowser_class = "Iceweasel"
+
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
