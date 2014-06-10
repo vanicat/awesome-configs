@@ -229,7 +229,9 @@ tags_description = {
 }
 
 tags = {}
+tags_by_name = {}
 for s = 1, screen.count() do
+   tags_by_name[s] = {}
    td = tags_description[s]
    -- Each screen has its own tag table.
    tags[s] = awful.tag({ td[1].name, td[2].name, td[3].name,
@@ -237,6 +239,7 @@ for s = 1, screen.count() do
                          td[7].name }, s, layouts[1])
    for i = 1, 7 do
       awful.layout.set(td[i].layout.layout,tags[s][i])
+      tags_by_name[s][td[i].name]=tags[s][i]
    end
 end
 -- }}}
@@ -531,22 +534,49 @@ root.keys(globalkeys)
 
 -- {{{ Rules
 awful.rules.rules = {
-    -- All clients will match this rule.
-    { rule = { },
+   -- All clients will match this rule.
+   { rule = { },
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
                      focus = awful.client.focus.filter,
                      keys = clientkeys,
                      buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
-      properties = { floating = true } },
-    { rule = { class = "pinentry" },
-      properties = { floating = true } },
-    { rule = { class = "gimp" },
-      properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
+   { rule = { class = "Calibre-gui", instance = "calibre-gui" },
+     properties = { tag = tags_by_name[main_screen]["cal"] } },
+   { rule = { class = "Iceweasel", instance = "Navigator" },
+     properties = { tag = tags_by_name[main_screen]["net"] } },
+   { rule = { class = "Chromium" },
+     properties = { tag = tags_by_name[main_screen]["net"] } },
+   { rule = { class = "Steam" },
+     properties = { tag = tags_by_name[main_screen]["sup2"] } },
+   { rule = { class = "MPlayer" },
+     properties = { floating = true } },
+   { rule = { class = "pinentry" },
+     properties = { floating = true } },
+   { rule = { class = "gimp" },
+     properties = { floating = true } },
+   { rule = { class = "Emacs" },
+     properties = { tag = tags_by_name[main_screen]["em"],
+                    size_hints_honor = false } },
+   { rule = { class = "Miro.real"},
+     properties = { tag = tags_by_name[main_screen]["pl"] } },
+   { rule = { instance = "gajim.py" },
+     properties = { tag = tags_by_name[secondary_screen]["IM"] } },
+   { rule = { class = "Transmission" },
+     properties = { tag = tags_by_name[main_screen]["sup2"] } },
+   { rule = { instance = "xmms-gtk-rater" },
+     properties = { tag = tags_by_name[secondary_screen]["pl"] } },
+   { rule = { instance = "cairo-dock" },
+     properties = { ontop = true } },
+   { rule = { instance = "cairo-dock" },
+     properties = { ontop = true, focusable = false } },
+   { rule = { instance = "abraca" },
+     properties = { tag = tags_by_name[secondary_screen]["pl"] } },
+   { rule = { class = "Pidgin" },
+     properties = { tag = tags_by_name[secondary_screen]["IM"] } },
+   { rule = { instance = "x-nautilus-desktop" },
+     properties = { focusable = false } },
+
 }
 -- }}}
 
@@ -621,4 +651,31 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+-- }}}
+
+-- {{{ Moving browser arround
+function select_browser(tag)
+   local clients = client.get()
+   local properties = { class = webbrowser_class }
+
+   if(tags_by_name[main_screen]["net"].selected) then
+      ntag = tags_by_name[main_screen]["net"]
+   elseif (tags_by_name[secondary_screen]["net"].selected) then
+      ntag = tags_by_name[secondary_screen]["net"]
+   else
+      return nil
+   end
+   for i, c in pairs(clients) do
+      if match(properties, c) then
+         c.screen=awful.tag.getscreen(ntag)
+         c:tags({ ntag })
+      end
+   end
+end
+
+if not(main_screen == secondary_screen) then
+   for s = main_screen, secondary_screen do
+      tags_by_name[s]["net"]:connect_signal("property::selected",select_browser)
+   end
+end
 -- }}}
