@@ -330,12 +330,57 @@ mytasklist.buttons = awful.util.table.join(
                                                   c:raise()
                                               end
                                           end),
-                     awful.button({ }, 3, function ()
-                                              if instance then
-                                                  instance:hide()
-                                                  instance = nil
+                     awful.button({ }, 3, function (c)
+                                              if c.maximized_horizontal then
+                                                 max_icon = beautiful.titlebar_maximized_button_focus_active
                                               else
-                                                  instance = awful.menu.clients({ width=250 })
+                                                 max_icon = beautiful.titlebar_maximized_button_focus_inactive
+                                              end
+                                              if awful.client.floating.get(c) then
+                                                 float_icon = beautiful.titlebar_floating_button_focus_active
+                                              else
+                                                 float_icon = beautiful.titlebar_floating_button_focus_inactive
+                                              end
+                                              if c.sticky then
+                                                 sticky_icon = beautiful.titlebar_sticky_button_focus_active
+                                              else
+                                                 sticky_icon = beautiful.titlebar_sticky_button_focus_inactive
+                                              end
+                                              if instance then
+                                                 instance:hide()
+                                                 instance = nil
+                                              else
+                                                 instance = awful.menu.new({ items =
+                                                                             { { "close", function ()
+                                                                                             c:kill()
+                                                                                             instance = nil
+                                                                                          end, beautiful.titlebar_close_button_focus },
+                                                                               { "maximize", function ()
+                                                                                                c.maximized_horizontal = not c.maximized_horizontal
+                                                                                                c.maximized_vertical = not c.maximized_vertical
+                                                                                                instance = nil
+                                                                                             end, max_icon },
+                                                                               { "float", function ()
+                                                                                             awful.client.floating.toggle(c)
+                                                                                             instance = nil
+                                                                                          end, float_icon },
+                                                                               { "sticky", function ()
+                                                                                              c.sticky=not c.sticky
+                                                                                              instance = nil
+                                                                                           end, sticky_icon },
+                                                                               { "info", function ()
+                                                                                            give_info(c)
+                                                                                            instance = nil
+                                                                                         end, nil },
+                                                                               { "raise", function ()
+                                                                                             c:raise()
+                                                                                             instance = nil
+                                                                                          end, nil },
+                                                                               { "focus", function ()
+                                                                                             awful.client.focus.byidx(0, c)
+                                                                                             instance = nil
+                                                                                          end, nil }}})
+                                                 instance:show()
                                               end
                                           end),
                      awful.button({ }, 4, function ()
