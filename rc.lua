@@ -459,12 +459,12 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
-    awful.key({ modkey,           }, "n",
+    awful.key({ modkey,           }, "s",
         function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "p",
+    awful.key({ modkey,           }, "t",
         function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
@@ -472,10 +472,10 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
 
     -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+    awful.key({ modkey, "Shift"   }, "s", function () awful.client.swap.byidx(  1)    end),
+    awful.key({ modkey, "Shift"   }, "t", function () awful.client.swap.byidx( -1)    end),
+    awful.key({ modkey, "Control" }, "s", function () awful.screen.focus_relative( 1) end),
+    awful.key({ modkey, "Control" }, "t", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
@@ -542,7 +542,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey,           }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
+--    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
     awful.key({ modkey, "Shift"   }, "m",
         function (c)
             -- The client currently has the input focus, so it cannot be
