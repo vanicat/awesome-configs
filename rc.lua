@@ -205,7 +205,7 @@ else
    webbrowser = "iceweasel"
 end
 
-filemanager = "nautilus"
+filemanager = "nautilus -w"
 webbrowser_class = "Iceweasel"
 
 
