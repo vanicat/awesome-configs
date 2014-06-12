@@ -53,6 +53,28 @@ function match (table1, table2)
    return true
 end
 
+-- Return clients matching a property
+function client_matching(properties)
+   local clients = client.get()
+   local focused = awful.client.next(0)
+   local findex = 0
+   local matched_clients = {}
+   local n = 0
+   for i, c in pairs(clients) do
+      --make an array of matched clients
+      if match(properties, c) then
+         n = n + 1
+         matched_clients[n] = c
+         if c == focused then
+            findex = n
+         end
+      end
+   end
+   matched_clients.n = n
+   matched_clients.findex = findex
+   return matched_clients
+end
+
 --- Spawns cmd if no client can be found matching properties
 -- If such a client can be found, pop to first tag where it is visible, and give it focus
 -- @param cmd the command to execute
@@ -193,6 +215,7 @@ webbrowser_class = "Iceweasel"
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
+spawnkey = { modkey, "Control" }
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -532,8 +555,18 @@ globalkeys = awful.util.table.join(
     key_spawn({}, "XF86AudioRaiseVolume", "pactl set-sink-volume 0 +2%"),
     key_spawn({}, "XF86AudioLowerVolume", "pactl set-sink-volume 0 -2%"),
     key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
-    key_spawn({}, "XF86Sleep",            "sudo pm-hibernate")
+    key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
 
+    key_spawn(spawnkey, "Return",         terminal),
+    key_spawn(spawnkey, "f",              filemanager),
+    key_run_or_raise({}, "XF86AudioMedia", xbmc,                         { class = "xbmc.bin" }),
+    key_run_or_raise({}, "XF86Tools",      xbmc,                         { class = "xbmc.bin" }),
+    key_run_or_raise(spawnkey, "v",        "gnome-control-center sound", { class = "gnome-control-center" }),
+    key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = webbrowser_class }),
+    key_run_or_raise(spawnkey, "w",        webbrowser,                   { class = webbrowser_class }),
+    key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
+    key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
+    key_run_or_raise({}, "XF86Launch7",    steam,                        { class = "Steam" })
 )
 
 clientkeys = awful.util.table.join(
