@@ -557,7 +557,6 @@ globalkeys = awful.util.table.join(
     key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
     key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
 
-    key_spawn(spawnkey, "Return",         terminal),
     key_spawn(spawnkey, "f",              filemanager),
     key_run_or_raise({}, "XF86AudioMedia", xbmc,                         { class = "xbmc.bin" }),
     key_run_or_raise({}, "XF86Tools",      xbmc,                         { class = "xbmc.bin" }),
