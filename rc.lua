@@ -162,10 +162,12 @@ end
 
 hostname = hostname()
 
+session = {}
+
 if true then
-   session = "systemd"
+   session.name = "systemd"
 else
-   session = "gnome"
+   session.name = "gnome"
 end
 
 if hostname == "gobelin" then
@@ -197,11 +199,52 @@ editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Some usefull program
-if session == "systemd" then
-   emacs = "systemctl --user start emacs.service"
-   xbmc = "systemctl --user start xbmc.service"
-   steam = "systemctl --user start steam.service"
-   webbrowser = "systemctl --user start iceweasel.service"
+if session.name == "systemd" then
+   session.emacs = "systemctl --user start emacs.service"
+   session.xbmc = "systemctl --user start xbmc.service"
+   session.steam = "systemctl --user start steam.service"
+   session.webbrowser = "systemctl --user start iceweasel.service"
+
+   session.hibernate = function ()
+      if hostname == "gobelin" then
+         awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+      end
+      awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
+   end
+
+   session.suspend = function ()
+      if hostname == "gobelin" then
+         awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+      end
+      awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+   end
+
+   session.quit = function ()
+      awful.util.spawn("systemctl --user start session-quit.service")
+   end
+
+   session.power_off = function ()
+      awful.util.spawn("systemctl --user start poweroff.service")
+   end
+
+   session.reboot = function ()
+      awful.util.spawn("systemctl --user start reboot.service")
+   end
+
+   session.webbrowser_class = "Iceweasel"
+
+   session.filemanager = "nautilus -w"
+
+   session.quit_menu = { { "yes", session.quit },
+                         { "no", function () end },
+                         { "hibernate", session.hibernate },
+                         { "halt", session.power_off },
+                         { "reboot", session.reboot },
+                         { "restart", awesome.restart } }
+
+   if hostname == "madame" then
+      table.insert(session.quit_menu,{ "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end })
+   end
 else
    emacs = "myemacs-n2"
    xbmc = "xbmc"
@@ -209,8 +252,7 @@ else
    webbrowser = "iceweasel"
 end
 
-filemanager = "nautilus -w"
-webbrowser_class = "Iceweasel"
+
 
 
 -- Default modkey.
@@ -551,7 +593,7 @@ globalkeys = awful.util.table.join(
                                             awful.menu.clients({}, { width = 250, keygrabber = true })
                                           end),
     -- multimedia
-    key_spawn({}, "XF86PowerOff",         "systemctl hibernate"),
+    key_spawn({}, "XF86PowerOff",         session.hibernate),
     key_spawn({}, "XF86AudioPlay",        "nyxmms2 toggle"),
     key_spawn({}, "XF86AudioStop",        "nyxmms2 stop"),
 
@@ -563,17 +605,17 @@ globalkeys = awful.util.table.join(
     key_spawn({}, "XF86AudioRaiseVolume", "pactl set-sink-volume 0 +2%"),
     key_spawn({}, "XF86AudioLowerVolume", "pactl set-sink-volume 0 -2%"),
     key_spawn({}, "XF86AudioMute",        "amixer set Master toggle"),
-    key_spawn({}, "XF86Sleep",            "sudo pm-hibernate"),
+    key_spawn({}, "XF86Sleep",            session.hibernate),
 
-    key_spawn(spawnkey, "f",              filemanager),
-    key_run_or_raise({}, "XF86AudioMedia", xbmc,                         { class = "xbmc.bin" }),
-    key_run_or_raise({}, "XF86Tools",      xbmc,                         { class = "xbmc.bin" }),
+    key_spawn(spawnkey, "f",               session.filemanager),
+    key_run_or_raise({}, "XF86AudioMedia", session.xbmc,                         { class = "xbmc.bin" }),
+    key_run_or_raise({}, "XF86Tools",      session.xbmc,                         { class = "xbmc.bin" }),
     key_run_or_raise(spawnkey, "v",        "gnome-control-center sound", { class = "gnome-control-center" }),
-    key_run_or_raise({}, "XF86HomePage",   webbrowser,                   { class = webbrowser_class }),
-    key_run_or_raise(spawnkey, "w",        webbrowser,                   { class = webbrowser_class }),
-    key_run_or_raise({}, "XF86Mail",       emacs,                        { class = "Emacs" }),
-    key_run_or_raise(spawnkey, "e",        emacs,                        { class = "Emacs" }),
-    key_run_or_raise({}, "XF86Launch7",    steam,                        { class = "Steam" })
+    key_run_or_raise({}, "XF86HomePage",   session.webbrowser,                   { class = session.webbrowser_class }),
+    key_run_or_raise(spawnkey, "w",        session.webbrowser,                   { class = session.webbrowser_class }),
+    key_run_or_raise({}, "XF86Mail",       session.emacs,                        { class = "Emacs" }),
+    key_run_or_raise(spawnkey, "e",        session.emacs,                        { class = "Emacs" }),
+    key_run_or_raise({}, "XF86Launch7",    session.steam,                        { class = "Steam" })
 )
 
 clientkeys = awful.util.table.join(
@@ -776,7 +818,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- {{{ Moving browser arround
 function select_browser(tag)
    local clients = client.get()
-   local properties = { class = webbrowser_class }
+   local properties = { class = session.webbrowser_class }
 
    if(tags_by_name[main_screen]["net"].selected) then
       ntag = tags_by_name[main_screen]["net"]
