@@ -104,7 +104,11 @@ function run_or_raise(cmd, properties)
       c:raise()
       return
    end
-   awful.util.spawn(cmd)
+   if type(cmd) == "string" then
+      awful.util.spawn(cmd)
+   else
+      cmd()
+   end
 end
 
 -- raise or nothing
