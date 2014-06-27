@@ -472,7 +472,11 @@ root.buttons(awful.util.table.join(
 -- {{{ Key bindings
 -- some usefull function
 function key_spawn (mod, key, cmd)
-   return awful.key(mod, key, function () awful.util.spawn(cmd) end)
+   if type(cmd) == "string" then
+      return awful.key(mod, key, function () awful.util.spawn(cmd) end)
+   else
+      return awful.key(mod, key, function () cmd() end)
+   end
 end
 
 function key_run_or_raise (mod, key, cmd, prop)
