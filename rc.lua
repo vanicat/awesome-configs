@@ -10,6 +10,7 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+local obvious = require("obvious")
 
 local all_menu_dirs = { '/usr/share/applications/', '/usr/local/share/applications/', '~/.local/share/applications/', '/usr/share/applications/kde4/'}
 
@@ -165,9 +166,9 @@ else
 end
 
 if hostname == "gobelin" then
-   asbattery = true
+   hasbattery = true
 else
-   asbattery = false
+   hasbattery = false
 end
 
 -- screen...
@@ -444,6 +445,9 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    if hasbattery then
+       right_layout:add(obvious.battery())
+    end
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
