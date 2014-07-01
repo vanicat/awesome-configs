@@ -1,24 +1,13 @@
 * the xsessionrc
   #+begin_src sh :tangle ~/.xsessionrc
+    # Tangle from ~/.config/awesome/myconf.org
+
     cd ~/.config/awesome/
     make
     cd
 
     export EDITOR=myemacs
     # export GDK_NATIVE_WINDOWS=1 #was for acroread
-
-    if [ ! "toubib" = `hostname` ]; then
-        export XMMS_PATH=tcp://toubib:9667
-    fi
-
-    if [ $(hostname) = "corbeau" ]; then
-        xrandr --output DFP9 --rotate left
-        xrandr --output DFP10 --left-of DFP9
-    fi
-
-    if [ `hostname` = "maison" ] || [ `hostname` = "toubib" ]; then
-       xrandr --output default --mode 1360x768
-    fi
 
     keychain
     if [ -e ~/.keychain/$(hostname)-sh ]; then
@@ -37,21 +26,6 @@
 
     /usr/bin/wmname compiz &
 
-    if [ `hostname` = "toubib" ]; then
-        eval $(dbus-launch --sh-syntax)
-        export DBUS_SESSION_BUS_PID
-        pulseaudio --daemonize
-        aumix -L
-        /usr/bin/gnome-settings-daemon &
-        /usr/lib/at-spi/at-spi-registryd &
-        iceweasel &
-        tmux new-session -d "offlineimap -a Gmail,Laposte"
-        /usr/bin/miro &
-        /usr/bin/transmission &
-        /usr/bin/xmms2-launcher
-        /usr/bin/abraca &
-        /home/moi/bin/xmms-gtk-rater &
-    fi
   #+end_src
 
 * System wide config
