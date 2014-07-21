@@ -205,20 +205,6 @@ if session.name == "systemd" then
    session.steam = "systemctl --user start steam.service"
    session.webbrowser = "systemctl --user start iceweasel.service"
 
-   session.hibernate = function ()
-      if hostname == "gobelin" then
-         awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-      end
-      awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
-   end
-
-   session.suspend = function ()
-      if hostname == "gobelin" then
-         awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
-      end
-      awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
-   end
-
    session.quit = function ()
       awful.util.spawn("systemctl --user start session-quit.service")
    end
@@ -231,27 +217,55 @@ if session.name == "systemd" then
       awful.util.spawn("systemctl --user start reboot.service")
    end
 
-   session.webbrowser_class = "Iceweasel"
+else                            -- This is a gnome session
 
-   session.filemanager = "nautilus -w"
+   session.emacs = "emacs"
+   session.xbmc = "xbmc"
+   session.steam = "steam"
+   session.webbrowser = "iceweasel"
 
-   session.quit_menu = { { "yes", session.quit },
-                         { "no", function () end },
-                         { "hibernate", session.hibernate },
-                         { "halt", session.power_off },
-                         { "reboot", session.reboot },
-                         { "restart", awesome.restart } }
-
-   if hostname == "madame" then
-      table.insert(session.quit_menu,{ "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end })
+   session.quit = function ()
+      awful.util.spawn("gnome-session-quit --logout") -- Do not seam to work...
    end
-else
-   emacs = "myemacs-n2"
-   xbmc = "xbmc"
-   steam = "steam"
-   webbrowser = "iceweasel"
+
+   session.power_off = function ()
+      awful.util.spawn("gnome-session-quit --power-off")
+   end
+
+   session.reboot = function ()
+      awful.util.spawn("gnome-session-quit --reboot")
+   end
+
 end
 
+session.webbrowser_class = "Iceweasel"
+
+session.filemanager = "nautilus -w"
+
+session.quit_menu = { { "yes", session.quit },
+   { "no", function () end },
+   { "hibernate", session.hibernate },
+   { "halt", session.power_off },
+   { "reboot", session.reboot },
+   { "restart", awesome.restart } }
+
+if hostname == "madame" then
+   table.insert(session.quit_menu,{ "hibernate to win", function () awful.util.spawn("gksudo /home/moi/bin/hibernate-to-win") end })
+end
+
+session.hibernate = function ()
+   if hostname == "gobelin" then
+      awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+   end
+   awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Hibernate")
+end
+
+session.suspend = function ()
+   if hostname == "gobelin" then
+      awful.util.spawn("dbus-send --print-reply --session --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock")
+   end
+   awful.util.spawn("dbus-send --print-reply --system --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend")
+end
 
 
 
