@@ -164,7 +164,7 @@ hostname = hostname()
 
 session = {}
 
-if true then
+if false then                   -- systemd not for interactive session
    session.name = "systemd"
 else
    session.name = "gnome"
