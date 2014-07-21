@@ -55,7 +55,7 @@
      exec gnome-session --session awesome "$@"
    #+end_src
 ** /usr/share/gnome-session/sessions/awesome.session
-   #+begin_src sh :tangle no
+   #+begin_src conf :tangle no
      [GNOME Session]
      Name=Awesome session
      RequiredComponents=gnome-settings-daemon;
@@ -63,3 +63,12 @@
      DefaultProvider-windowmanager=awesome
      DefaultProvider-notifications=notification-daemon
    #+end_src
+** launch user@moi.service /etc/systemd/system/my-user-session.target
+#+begin_src conf :tangle no
+  [Unit]
+  Description=my config for my user
+  Require=user@moi.service
+
+  [Install]
+  WantedBy=multi-user.target
+#+end_src
