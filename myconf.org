@@ -2,10 +2,6 @@
   #+begin_src sh :tangle ~/.xsessionrc
     # Tangle from ~/.config/awesome/myconf.org
 
-    cd ~/.config/awesome/
-    make
-    cd
-
     export EDITOR=myemacs
     # export GDK_NATIVE_WINDOWS=1 #was for acroread
 
