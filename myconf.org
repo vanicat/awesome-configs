@@ -1,5 +1,5 @@
 * the xsessionrc
-  #+begin_src sh :tangle ~/.xsessionrc
+  #+begin_src sh :tangle ~/.xsessionrc :shebang "#!/bin/sh"
     # Tangle from ~/.config/awesome/myconf.org
 
     export EDITOR=myemacs
