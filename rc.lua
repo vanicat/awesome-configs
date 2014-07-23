@@ -165,11 +165,13 @@ hostname = hostname()
 
 session = {}
 
-if false then                   -- systemd not for interactive session
-   session.name = "systemd"
-else
-   session.name = "gnome"
-end
+-- if false then                   -- systemd not for interactive session
+--    session.name = "systemd"
+-- else
+--    session.name = "gnome"
+-- end
+
+session.name = "xsession"
 
 if hostname == "gobelin" then
    hasbattery = true
@@ -218,25 +220,37 @@ if session.name == "systemd" then
       awful.util.spawn("systemctl --user start reboot.service")
    end
 
-else                            -- This is a gnome session
-
+else                            -- other session 
    session.emacs = "emacs"
    session.xbmc = "xbmc"
    session.steam = "steam"
    session.webbrowser = "iceweasel"
 
-   session.quit = function ()
-      awful.util.spawn("gnome-session-quit --logout") -- Do not seam to work...
-   end
+   if session.name == "gnome" then
+      session.quit = function ()
+         awful.util.spawn("gnome-session-quit --logout") -- Do not seam to work...
+      end
 
-   session.power_off = function ()
-      awful.util.spawn("gnome-session-quit --power-off")
-   end
+      session.power_off = function ()
+         awful.util.spawn("gnome-session-quit --power-off")
+      end
 
-   session.reboot = function ()
-      awful.util.spawn("gnome-session-quit --reboot")
-   end
+      session.reboot = function ()
+         awful.util.spawn("gnome-session-quit --reboot")
+      end
+   else
+      session.quit = function ()
+         awesome.quit ()
+      end
 
+      session.power_off = function ()
+         awful.util.spawn("systemctl poweroff")
+      end
+
+      session.reboot = function ()
+         awful.util.spawn("systemctl reboot")
+      end
+   end
 end
 
 session.webbrowser_class = "Iceweasel"
