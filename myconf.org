@@ -20,6 +20,10 @@
         export XAUTHORITY=$HOME/.Xauthority
     fi
 
+    if [ -x ~/bin/run-calibre ]; then
+        ~/bin/run-calibre
+    fi
+
     /usr/bin/wmname compiz &
 
   #+end_src
