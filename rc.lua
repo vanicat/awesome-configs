@@ -557,6 +557,21 @@ function key_run_or_raise (mod, key, cmd, prop)
    return awful.key(mod, key, function () run_or_raise(cmd, prop) end)
 end
 
+function give_info (c)
+   text = ""
+   if c.class then
+      text = text .. "Class: " .. c.class .. " "
+   end
+   if c.instance then
+      text = text .. "Instance: ".. c.instance .. " "
+   end
+   if c.role then
+      text = text .. "Role: ".. c.role
+   end
+   naughty.notify({text = text, title = "window info", timeout = 5, screen = mouse.screen, ontop = true})
+   io.stderr:write (text)
+   io.stderr:write "\n"
+end
 
 -- the bindings
 globalkeys = awful.util.table.join(
