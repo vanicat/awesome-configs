@@ -490,6 +490,87 @@ mytasklist.buttons = awful.util.table.join(
                                               if client.focus then client.focus:raise() end
                                           end))
 
+-- ** Create a keyboard widget
+-- obvious.keymap_switch.set_layouts({ "fr(bepo)", "fr(oss)" })
+
+-- keywidget = obvious.keymap_switch()
+-- ** Create a keyboard widget
+-- *** The table of keymap
+keyreverse = { }
+keyreverse["fr(bepo)"] = "bépo"
+keyreverse["fr(oss)"] = "azer"
+keyreverse["us"] = "qwer"
+
+keyboard_layout = { }
+keyboard_layout["bépo"]="fr(bepo)"
+keyboard_layout["azer"]="fr(oss)"
+keyboard_layout["qwer"]="us"
+
+-- *** The function to check the situation
+function get_current_keymap()
+   local fd = io.popen("setxkbmap -print")
+   if not fd then return end
+
+   for line in fd:lines() do
+      if line:match("xkb_symbols") then
+         local keymap = line:match("\+[^+]*\+")
+
+         fd:close()
+         if not keymap then
+            return "unknown layout"
+         else if keyreverse[keymap:sub(2, -2)] then
+               return keyreverse[keymap:sub(2, -2)]
+            else
+               return keymap:sub(2, -2)
+            end
+         end
+      end
+   end
+
+   fd:close()
+   return "unknown layout"
+end
+-- *** Changing configuration
+function switch_keymap(layout_string)
+   if keyboard_layout[layout_string] then
+      awful.util.spawn("setxkbmap \"" .. keyboard_layout[layout_string] .. "\"")
+   else
+      awful.util.spawn("setxkbmap \"" .. layout_string .. "\"")
+   end
+   update_keywidget()
+end
+-- *** The menu
+keymenu =  awful.menu.new({ items =
+                            { { "bépo", function () switch_keymap "bépo" end, nil },
+                              { "azerty", function () switch_keymap "azer" end, nil },
+                              { "qwerty", function () switch_keymap "us" end, nil },
+                           }
+                      }
+                    )
+
+-- *** The widget
+keywidget = wibox.widget.textbox()
+keywidget:set_text("...")
+update_keywidget = function() keywidget:set_text(get_current_keymap()) end
+update_keywidget()
+keywidget:buttons(awful.util.table.join(
+                     awful.button({ }, 1, function ()
+                                             keymenu:toggle()
+                                          end),
+                     awful.button({ }, 3, function ()
+                                             keymenu:toggle()
+                                          end),
+                     awful.button({ }, 4, awful.tag.viewnext),
+                     awful.button({ }, 5, awful.tag.viewprev)
+               ))
+
+
+keywidget_timer = timer({ timeout = 120 })
+keywidget_timer:connect_signal("timeout", update_keywidget)
+keywidget_timer:start()
+
+
+
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt()
@@ -518,7 +599,9 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
+    if s == 1 then right_layout:add(keywidget) end
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+
     if hasbattery then
        right_layout:add(obvious.battery())
     end
