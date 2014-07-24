@@ -21,7 +21,7 @@
     fi
 
     if [ -x ~/bin/run-calibre ]; then
-        ~/bin/run-calibre
+        ~/bin/run-calibre &
     fi
 
     /usr/bin/wmname compiz &
