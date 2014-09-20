@@ -5,10 +5,10 @@
     export EDITOR=myemacs
     # export GDK_NATIVE_WINDOWS=1 #was for acroread
 
-    keychain
-    if [ -e ~/.keychain/$(hostname)-sh ]; then
-          . ~/.keychain/$(hostname)-sh
-    fi
+    # keychain
+    # if [ -e ~/.keychain/$(hostname)-sh ]; then
+    #       . ~/.keychain/$(hostname)-sh
+    # fi
 
 
     if [ -d /usr/lib/vdpau/ ]; then
@@ -20,8 +20,12 @@
         export XAUTHORITY=$HOME/.Xauthority
     fi
 
-    if [ -x ~/bin/run-calibre ]; then
-        ~/bin/run-calibre &
+    # if [ -x ~/bin/run-calibre ]; then
+    #     ~/bin/run-calibre &
+    # fi
+
+    if [ -e ~/.fehbg ]; then
+        sh ~/.fehbg
     fi
 
     /usr/bin/wmname compiz &
