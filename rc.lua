@@ -5,6 +5,8 @@ awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
+-- alt tab
+local alttab = require("alttab")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -681,12 +683,13 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "t", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
-        function ()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
-        end),
+       function ()
+           alttab(1, "Super_L", "Tab", "ISO_Left_Tab")
+       end),
+    awful.key({ modkey, "Shift"   }, "Tab",
+       function ()
+           alttab(-1, "Super_L", "Tab", "ISO_Left_Tab")
+       end),
 
     -- Standard program
     awful.key({ modkey, "Control" }, "Return", function () awful.util.spawn(terminal) end),
