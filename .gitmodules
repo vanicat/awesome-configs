@@ -7,3 +7,6 @@
 [submodule "vicious"]
 	path = vicious
 	url = http://git.sysphere.org/vicious
+[submodule "alttab"]
+	path = alttab
+	url = https://github.com/jorenheit/awesome_alttab.git
