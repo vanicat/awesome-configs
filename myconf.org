@@ -28,6 +28,12 @@
         sh ~/.fehbg
     fi
 
+    nm-applet &
+
+    if [ -e ~/.fehbg ]; then
+        sh ~/.fehbg
+    fi
+
     /usr/bin/wmname compiz &
 
   #+end_src
