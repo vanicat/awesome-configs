@@ -684,11 +684,11 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
        function ()
-           alttab(1, "Super_L", "Tab", "ISO_Left_Tab")
+           alttab.switch(1, "Super_L", "Tab", "ISO_Left_Tab")
        end),
     awful.key({ modkey, "Shift"   }, "Tab",
        function ()
-           alttab(-1, "Super_L", "Tab", "ISO_Left_Tab")
+           alttab.switch(-1, "Super_L", "Tab", "ISO_Left_Tab")
        end),
 
     -- Standard program
