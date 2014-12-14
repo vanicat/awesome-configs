@@ -1,3 +1,5 @@
+-- * Init
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -21,6 +23,7 @@ menubar.menu_gen.all_menu_dirs = all_menu_dirs
 -- Load Debian menu entries
 require("debian.menu")
 
+-- * Error handling
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -44,8 +47,8 @@ do
         in_error = false
     end)
 end
--- }}}
 
+-- * Some function definition
 -- {{{ Some function definition
 function match (table1, table2)
    for k, v in pairs(table1) do
@@ -153,7 +156,9 @@ end
 
 -- }}}
 
+-- * Variable definitions
 -- {{{ Variable definitions
+-- ** Session definition
 -- hostname for host dependend configs
 function hostname()
    local f = io.popen ("/bin/hostname")
@@ -286,7 +291,7 @@ end
 
 
 
--- Default modkey.
+-- ** Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
@@ -294,6 +299,7 @@ end
 modkey = "Mod4"
 spawnkey = { modkey, "Control" }
 
+-- ** Layouts
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
@@ -312,6 +318,7 @@ local layouts =
 }
 -- }}}
 
+-- ** Wallpaper
 -- {{{ Wallpaper
 if beautiful.wallpaper then
     for s = 1, screen.count() do
@@ -320,6 +327,7 @@ if beautiful.wallpaper then
 end
 -- }}}
 
+-- ** Tags
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 if hostname == "madame" then
@@ -373,6 +381,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 
+-- ** Menu
 -- {{{ Menu
 -- Create a laucher widget and a main menu
 myawesomemenu = {
@@ -395,6 +404,7 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
+-- * Wibox
 -- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
@@ -571,7 +581,7 @@ keywidget_timer = timer({ timeout = 120 })
 keywidget_timer:connect_signal("timeout", update_keywidget)
 keywidget_timer:start()
 
-
+-- ** Do create the wibox
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
@@ -620,6 +630,9 @@ for s = 1, screen.count() do
 end
 -- }}}
 
+-- * Bindings
+
+-- ** Mouse bindings
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),
@@ -628,6 +641,7 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
+-- ** Key bindings
 -- {{{ Key bindings
 -- some usefull function
 function key_spawn (mod, key, cmd)
@@ -827,6 +841,7 @@ clientbuttons = awful.util.table.join(
 root.keys(globalkeys)
 -- }}}
 
+-- * Rules
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
@@ -881,6 +896,7 @@ awful.rules.rules = {
 }
 -- }}}
 
+-- * Signals
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c, startup)
@@ -954,6 +970,7 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+-- * Moving browser arround
 -- {{{ Moving browser arround
 function select_browser(tag)
    local clients = client.get()
